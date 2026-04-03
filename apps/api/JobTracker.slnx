@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/JobTracker.Api/JobTracker.Api.csproj" Id="29ac38e6-9fa2-4e53-b680-87b3b29879d9" />
+    <Project Path="src/JobTracker.Application/JobTracker.Application.csproj" Id="e966bce4-ac67-44e7-8046-2dc7345ba318" />
+    <Project Path="src/JobTracker.Domain/JobTracker.Domain.csproj" Id="18713026-e71e-4098-8feb-0a5acbe2ad6d" />
+    <Project Path="src/JobTracker.Infrastructure/JobTracker.Infrastructure.csproj" Id="d822fd65-05ae-430b-a886-c2577b218c20" />
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>

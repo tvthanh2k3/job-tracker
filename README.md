@@ -1,71 +1,71 @@
-# Job Tracker (Công Cụ Theo Dõi Tìm Việc)
+# Job Tracker
 
-Một ứng dụng web toàn diện (full-stack) được thiết kế nhằm giúp người dùng quản lý và tối ưu hóa quá trình ứng tuyển việc làm. Nó hoạt động như một công cụ năng suất cá nhân giúp theo dõi các công việc đã ứng tuyển, quản lý trạng thái thông qua giao diện Kanban, phân tích hiệu suất tìm việc và tận dụng AI để cải thiện CV / Thư xin việc.
+A comprehensive full-stack web application designed to help users manage and optimize their job application process. It acts as a personal productivity tool to track applied jobs, manage statuses via a Kanban board, analyze job search performance, and leverage AI to enhance CVs and Cover Letters.
 
-## 🚀 Công Nghệ Sử Dụng (Tech Stack)
+## 🚀 Tech Stack
 
 - **Frontend**: React + Tailwind CSS + TypeScript + React Query + Zustand
-- **Backend**: ASP.NET Core Web API (Sử dụng .NET 10)
-- **Cơ Sở Dữ Liệu**: PostgreSQL (thông qua Entity Framework Core)
-- **Kiến Trúc**: Client-Server (giao tiếp qua RESTful API)
+- **Backend**: ASP.NET Core Web API (using .NET 10)
+- **Database**: PostgreSQL (via Entity Framework Core)
+- **Architecture**: Client-Server (RESTful API communication)
 
-## 🏗️ Kiến Trúc Hệ Thống Tổng Quan
+## 🏗️ Technical Architecture Overview
 
-Dự án áp dụng kiến trúc Client-Server đã được phân tách rõ ràng:
-- **Frontend SPA**: Lớp Frontend (React) đảm nhiệm vai trò giao diện (UI), xác thực dữ liệu phía client, quản lý trạng thái (Zustand cho việc quản lý state toàn cục và React Query cho việc lưu trữ cache từ server).
-- **Backend API**: Backend bằng ASP.NET Core áp dụng **Kiến trúc Clean Architecture** (Api, Application, Domain, Infrastructure). Thiết kế này tách biệt rõ ràng việc định tuyến HTTP, logic nghiệp vụ ứng dụng, các thực thể lõi, và việc truy cập cơ sở dữ liệu.
-- **Lưu trữ dữ liệu**: Cơ sở dữ liệu Postgres cho tính toàn vẹn dữ liệu thông qua Entity Framework Core.
-- **Xác thực**: Sử dụng cơ chế JSON Web Tokens (JWT) không trạng thái (stateless).
-- **Tích hợp bên ngoài**: API OpenAI để phân tích làm mới Resume và tạo Cover Letter tự động.
+The project adopts a clearly separated Client-Server architecture:
+- **Frontend SPA**: The Frontend layer (React) is responsible for the UI, client-side data validation, and state management (Zustand for global state and React Query for server state caching).
+- **Backend API**: The ASP.NET Core backend implements **Clean Architecture** (Api, Application, Domain, Infrastructure). This design strictly separates HTTP routing, application business logic, core entities, and database access.
+- **Data Storage**: Postgres database for data integrity via Entity Framework Core.
+- **Authentication**: Stateless JSON Web Tokens (JWT) mechanism.
+- **External Integrations**: OpenAI API for analyzing and revamping Resumes and auto-generating Cover Letters.
 
 ---
 
-## 📂 Cấu Trúc Thư Mục
+## 📂 Folder Structure
 
 ### Frontend (`apps/web/`)
-Hiện tại mã nguồn giao diện đang ở cấu trúc khởi tạo gốc của React Vite. Trong các bước tiếp theo, project sẽ được mở rộng ra theo hướng chia theo tính năng (**Feature-based architecture**).
+Currently, the UI source code uses the default React Vite initialization structure. In the next phases, the project will be expanded into a **Feature-based architecture**.
 
 ```text
 src/
-├── assets/             # Thư mục lưu trữ assets tĩnh
-├── App.css             # Định dạng style cho App component
-├── App.tsx             # Component gốc của ứng dụng
-├── index.css           # Khai báo Tailwind CSS và style cơ sở
-└── main.tsx            # Điểm neo vào index.html và khởi tạo giao diện
+├── assets/             # Directory for static assets
+├── App.css             # Styling for App component
+├── App.tsx             # Root component of the application
+├── index.css           # Tailwind CSS directives and base styles
+└── main.tsx            # Entry point into index.html and UI initialization
 ```
-*(Trong các phase sau, cấu trúc frontend sẽ được chia nhỏ thành `features/`, `components/`, `hooks/`, `stores/`, `pages/` để đáp ứng các nghiệp vụ quản lý Kanban board, Analytics, AI...)*
+*(In later phases, the frontend structure will be broken down into `features/`, `components/`, `hooks/`, `stores/`, `pages/` to handle business logic for Kanban board, Analytics, AI, etc.)*
 
 ### Backend (`apps/api/`)
-Kiến trúc **Clean Architecture** được thiết lập sẵn, phân chia trách nhiệm cụ thể giữa các hạ tầng mã nguồn.
+The **Clean Architecture** is already set up, dividing specific responsibilities across codebase layers.
 
 ```text
 src/
-├── JobTracker.Api/           # Lớp Giao Diện API (Presentation Layer)
-│   # Xử lý các request/response từ HTTP, Middleware, Controllers
-├── JobTracker.Application/   # Lớp Ứng Dụng (Application Layer)
-│   # Chứa các Use Cases, DTOs, Interfaces, Logic nghiệp vụ cụ thể của app
-├── JobTracker.Domain/        # Lớp Miền (Domain Layer)
-│   # Các thực thể dữ liệu (Entities: User, Job, Interview), Exceptions vùng lõi
-└── JobTracker.Infrastructure/# Lớp Hạ Tầng (Infrastructure Layer)
-    # DbContext (Entity Framework Core), Repositories, API tích hợp (OpenAI, Mail)
+├── JobTracker.Api/           # Presentation Layer
+│   # Handles HTTP requests/responses, Middleware, Controllers
+├── JobTracker.Application/   # Application Layer
+│   # Contains Use Cases, DTOs, Interfaces, specific business logic of the app
+├── JobTracker.Domain/        # Domain Layer
+│   # Data entities (User, Job, Interview), Core Exceptions
+└── JobTracker.Infrastructure/# Infrastructure Layer
+    # DbContext (Entity Framework Core), Repositories, API Integrations (OpenAI, Mail)
 ```
 
 ---
 
-## 🗄️ Lược Đồ Cơ Sở Dữ Liệu
+## 🗄️ Database Schema
 
-**Cấu Trúc Bảng PostgreSQL**
+**PostgreSQL Table Structure**
 
 1. **Users**
-   - `Id` (UUID, Khóa chính)
-   - `Email` (VARCHAR, Duy nhất)
+   - `Id` (UUID, Primary Key)
+   - `Email` (VARCHAR, Unique)
    - `PasswordHash` (VARCHAR)
    - `FullName` (VARCHAR)
    - `CreatedAt` (TIMESTAMP)
 
 2. **Jobs**
-   - `Id` (UUID, Khóa chính)
-   - `UserId` (UUID, Khóa ngoại -> Users.Id)
+   - `Id` (UUID, Primary Key)
+   - `UserId` (UUID, Foreign Key -> Users.Id)
    - `Title` (VARCHAR(150))
    - `Company` (VARCHAR(150))
    - `Url` (TEXT)
@@ -75,38 +75,38 @@ src/
    - `RemoteStatus` (ENUM: _'Onsite', 'Hybrid', 'Remote'_)
    - `CreatedAt` (TIMESTAMP), `UpdatedAt` (TIMESTAMP)
 
-3. **Interviews (Liên kết One-to-Many với Jobs)**
-   - `Id` (UUID, Khóa chính)
-   - `JobId` (UUID, Khóa ngoại -> Jobs.Id)
+3. **Interviews (One-to-Many relationship with Jobs)**
+   - `Id` (UUID, Primary Key)
+   - `JobId` (UUID, Foreign Key -> Jobs.Id)
    - `ScheduledAt` (TIMESTAMP)
-   - `Round` (VARCHAR) - ví dụ: "Phỏng vấn kỹ thuật", "Vòng HR"
+   - `Round` (VARCHAR) - e.g., "Technical Interview", "HR Round"
    - `Notes` (TEXT)
 
-4. **AnalyticsMetrics (Tùy chọn - Caching hoặc View)**
-   - Theo dõi để giảm thiểu tải tài nguyên do phải truy vấn tính toán thông số lớn.
+4. **AnalyticsMetrics (Optional - Caching or View)**
+   - Tracked to minimize heavy computation queries and reduce resource load.
 
 ---
 
-## 🛣️ Thiết Kế API (RESTful Endpoints)
+## 🛣️ API Design (RESTful Endpoints)
 
-**Xác Thực (Authentication)**
-- `POST   /api/auth/register` - Tạo tài khoản mới
-- `POST   /api/auth/login`    - Kiểm tra thông tin và trả về mã JWT
-- `GET    /api/auth/me`       - Trả về thông tin người dùng từ mã Token Header
+**Authentication**
+- `POST   /api/auth/register` - Create a new account
+- `POST   /api/auth/login`    - Verify credentials and return JWT token
+- `GET    /api/auth/me`       - Return user info from Token Header
 
-**Quản lí Việc Làm (Jobs CRUD & Kanban)**
-- `GET    /api/jobs`          - Lấy tất cả việc làm của người dùng (kèm Lọc, Phân trang)
-- `POST   /api/jobs`          - Tạo thông tin việc làm mới
-- `GET    /api/jobs/{id}`     - Lấy chi tiết công việc
-- `PUT    /api/jobs/{id}`     - Cập nhật toàn bộ file mô tả công việc
-- `PATCH  /api/jobs/{id}/status` - Cập nhật trạng thái Kanban của công việc (Kéo thả)
-- `DELETE /api/jobs/{id}`     - Xóa công việc
+**Job Management (Jobs CRUD & Kanban)**
+- `GET    /api/jobs`          - Get all user jobs (with Filtering, Pagination)
+- `POST   /api/jobs`          - Create new job info
+- `GET    /api/jobs/{id}`     - Get job details
+- `PUT    /api/jobs/{id}`     - Update the entire job description file
+- `PATCH  /api/jobs/{id}/status` - Update job Kanban status (Drag and drop)
+- `DELETE /api/jobs/{id}`     - Delete job
 
-**Phân Tích (Analytics)**
-- `GET    /api/analytics/summary` - Lấy thông số tổng quan KPI (Ví dụ: số đơn ứng tuyển, tỷ lệ phỏng vấn)
+**Analytics**
+- `GET    /api/analytics/summary` - Get high-level KPI metrics (e.g., number of applications, interview rate)
 
-**Tích Hợp Trí Tuệ Nhân Tạo (AI API)**
-- `POST   /api/ai/optimize-resume` - Đầu vào: text resume hiện tại + mô tả công việc -> Kết quả: nội dung CV tối ưu
-- `POST   /api/ai/generate-cover-letter` - Kết quả: Thư ứng tuyển linh hoạt dán cho công việc đó
+**AI Integrations (AI API)**
+- `POST   /api/ai/optimize-resume` - Input: current resume text + job description -> Result: optimized CV content
+- `POST   /api/ai/generate-cover-letter` - Result: Flexible, tailored cover letter for that specific job
 
 ---

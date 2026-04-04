@@ -1,0 +1,23 @@
+using System.Reflection;
+using FluentValidation;
+using JobTracker.Application.Jobs;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace JobTracker.Application;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    {
+        // Register AutoMapper
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+        // Register FluentValidation
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+        // Register Business Services
+        services.AddScoped<IJobService, JobService>();
+
+        return services;
+    }
+}

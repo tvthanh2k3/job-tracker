@@ -1,4 +1,6 @@
+using JobTracker.Domain.Interfaces;
 using JobTracker.Infrastructure.Data;
+using JobTracker.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +16,10 @@ public static class DependencyInjection
 
         services.AddDbContext<JobTrackerDbContext>(options =>
             options.UseNpgsql(connectionString));
+
+        // Registry for Repositories and UnitOfWork
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }

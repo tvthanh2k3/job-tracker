@@ -17,6 +17,7 @@ public static class DependencyInjection
 
         // Register Business Services
         services.AddScoped<IJobService, JobService>();
+        services.AddScoped<IUserService, UserService>();
 
         return services;
     }

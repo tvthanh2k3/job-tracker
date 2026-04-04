@@ -29,6 +29,14 @@ public interface IGenericRepository<T> where T : class
     /// <param name="isTracking">If set to true, entities will be tracked by the context.</param>
     /// <returns>A collection of all entities.</returns>
     Task<IEnumerable<T>> GetAllAsync(bool isTracking = false);
+
+    /// <summary>
+    /// Gets all entities of type T that match the specified predicate.
+    /// </summary>
+    /// <param name="predicate">A function to test each element for a condition.</param>
+    /// <param name="isTracking">If set to true, entities will be tracked by the context.</param>
+    /// <returns>A collection of all entities matching the condition.</returns>
+    Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> predicate, bool isTracking = false);
     
     /// <summary>
     /// Returns an IQueryable for the entity to allow further LINQ operations like Include or OrderBy.

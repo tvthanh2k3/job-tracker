@@ -1,6 +1,7 @@
 using System.Reflection;
 using FluentValidation;
 using JobTracker.Application.Jobs;
+using JobTracker.Application.Users;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JobTracker.Application;

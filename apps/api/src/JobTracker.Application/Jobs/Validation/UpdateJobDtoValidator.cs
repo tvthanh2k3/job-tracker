@@ -10,6 +10,9 @@ public class UpdateJobDtoValidator : AbstractValidator<UpdateJobDto>
 {
     public UpdateJobDtoValidator()
     {
+        RuleFor(x => x.UserId)
+            .NotEmpty().WithMessage("User identification is required.");
+
         RuleFor(x => x.Title)
             .NotEmpty().WithMessage("Title is required.")
             .MaximumLength(200).WithMessage("Title must not exceed 200 characters.");

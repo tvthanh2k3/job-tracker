@@ -8,10 +8,11 @@ namespace JobTracker.Application.Jobs;
 public interface IJobService
 {
     /// <summary>
-    /// Gets a list of all jobs.
+    /// Gets a list of all jobs for a specific user.
     /// </summary>
+    /// <param name="userId">The user identifier.</param>
     /// <returns>A collection of JobDto.</returns>
-    Task<IEnumerable<JobDto>> GetAllJobsAsync();
+    Task<IEnumerable<JobDto>> GetAllJobsAsync(Guid userId);
 
     /// <summary>
     /// Gets a specific job by its unique identifier.

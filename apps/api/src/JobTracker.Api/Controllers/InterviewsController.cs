@@ -1,9 +1,11 @@
 using JobTracker.Application.Interviews;
 using JobTracker.Application.Interviews.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobTracker.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class InterviewsController : ControllerBase

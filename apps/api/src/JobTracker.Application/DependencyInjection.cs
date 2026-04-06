@@ -3,6 +3,7 @@ using FluentValidation;
 using JobTracker.Application.Jobs;
 using JobTracker.Application.Users;
 using JobTracker.Application.Interviews;
+using JobTracker.Application.Auth;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JobTracker.Application;
@@ -21,6 +22,7 @@ public static class DependencyInjection
         services.AddScoped<IJobService, JobService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IInterviewService, InterviewService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }

@@ -19,9 +19,9 @@ public class JobService : IJobService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<JobDto>> GetAllJobsAsync()
+    public async Task<IEnumerable<JobDto>> GetAllJobsAsync(Guid userId)
     {
-        var jobs = await _unitOfWork.Repository<Job>().GetAllAsync(isTracking: false);
+        var jobs = await _unitOfWork.Repository<Job>().GetAllAsync(j => j.UserId == userId, isTracking: false);
         return _mapper.Map<IEnumerable<JobDto>>(jobs);
     }
 

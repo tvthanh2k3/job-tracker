@@ -1,9 +1,12 @@
 using JobTracker.Application.Jobs;
 using JobTracker.Application.Jobs.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace JobTracker.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class JobsController : ControllerBase
@@ -18,7 +21,13 @@ public class JobsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var jobs = await _jobService.GetAllJobsAsync();
+        var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var jobs = await _jobService.GetAllJobsAsync(userId);
         return Ok(jobs);
     }
 

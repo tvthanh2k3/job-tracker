@@ -1,8 +1,10 @@
+import { RegisterForm } from '@/features/auth/RegisterForm'
+
 export default function RegisterPage() {
   return (
-    <div className="text-center py-8">
-      <h2 className="text-2xl font-bold text-foreground">Register</h2>
-      <p className="text-muted-foreground mt-2">Coming in Phase 2</p>
+    <div>
+      <h2 className="text-2xl font-bold text-foreground mb-6 text-center">Tạo tài khoản mới</h2>
+      <RegisterForm />
     </div>
   )
 }

@@ -3,6 +3,7 @@ using FluentValidation;
 using JobTracker.Application.Jobs;
 using JobTracker.Application.Users;
 using JobTracker.Application.Interviews;
+using JobTracker.Application.Auth;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JobTracker.Application;

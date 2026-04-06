@@ -21,6 +21,9 @@ public static class DependencyInjection
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+        // Registry for Services
+        services.AddScoped<JobTracker.Application.Auth.IJwtTokenService, JobTracker.Infrastructure.Services.JwtTokenService>();
+
         return services;
     }
 }

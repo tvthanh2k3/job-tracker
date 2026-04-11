@@ -2,8 +2,8 @@ import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors } from '@dn
 import type { DragEndEvent } from '@dnd-kit/core';
 import { KanbanColumn } from './KanbanColumn';
 import { useKanban } from './useKanban';
-import { JobStatus } from '@/types/job.types';
-import type { Job } from '@/types/job.types';
+import { JobStatus } from '@/features/jobs';
+import type { Job } from '@/features/jobs';
 
 interface KanbanBoardProps {
   jobs: Job[];

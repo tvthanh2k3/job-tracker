@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { authApi } from './authApi'
+import { authApi } from '../authApi'
 import { useAuthStore } from '@/stores/authStore'
 import { toast } from '@/components/ui/Toast'
 import { useNavigate } from 'react-router-dom'
-import type { LoginRequest, RegisterRequest } from '@/types/user.types'
+import type { LoginRequest, RegisterRequest } from '../auth.types'
 import { authKeys } from '@/constants/queryKeys'
 
 export function useLogin() {

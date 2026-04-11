@@ -2,7 +2,7 @@ import { Calendar, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { Badge, interviewResultVariant } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { formatDate } from '@/utils';
-import type { Interview, InterviewResult } from '@/types/interview.types';
+import type { Interview, InterviewResult } from '../job.types';
 
 interface InterviewListProps {
   interviews: Interview[];

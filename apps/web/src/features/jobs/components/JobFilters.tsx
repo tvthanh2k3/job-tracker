@@ -2,7 +2,7 @@ import { Search, SlidersHorizontal } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
-import { JobStatus, RemoteStatus } from '@/types/job.types';
+import { JobStatus, RemoteStatus } from '../job.types';
 
 export interface JobFiltersState {
   search: string;

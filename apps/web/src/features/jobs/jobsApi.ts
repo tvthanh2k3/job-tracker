@@ -4,12 +4,12 @@ import type {
   CreateJobRequest,
   UpdateJobRequest,
   UpdateJobStatusRequest,
-  JobFilters,
-  PaginatedJobs
-} from '@/types/job.types';
+  JobFilters
+} from './job.types';
+import type { PaginatedResponse } from '@/types/common.types';
 
 export const jobsApi = {
-  getJobs: async (filters?: JobFilters): Promise<PaginatedJobs> => {
+  getJobs: async (filters?: JobFilters): Promise<PaginatedResponse<Job>> => {
     const params = new URLSearchParams();
     if (filters?.status) params.append('status', filters.status);
     if (filters?.remoteStatus) params.append('remoteStatus', filters.remoteStatus);
@@ -17,7 +17,7 @@ export const jobsApi = {
     if (filters?.page) params.append('page', filters.page.toString());
     if (filters?.pageSize) params.append('pageSize', filters.pageSize.toString());
 
-    const response = await api.get<PaginatedJobs>('/api/jobs', { params });
+    const response = await api.get<PaginatedResponse<Job>>('/api/jobs', { params });
     return response.data;
   },
 

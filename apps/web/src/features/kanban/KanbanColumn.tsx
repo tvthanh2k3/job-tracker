@@ -1,6 +1,6 @@
 import { useDroppable } from '@dnd-kit/core';
 import { KanbanCard } from './KanbanCard';
-import type { Job, JobStatus } from '@/types/job.types';
+import type { Job, JobStatus } from '@/features/jobs';
 
 interface KanbanColumnProps {
   status: JobStatus;

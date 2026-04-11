@@ -1,5 +1,5 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import type { TimelineItem } from '@/types/analytics.types'
+import type { TimelineItem } from './analytics.types'
 
 interface ApplicationTimelineProps {
   data: TimelineItem[]

@@ -3,7 +3,7 @@ import { MapPin, DollarSign, Calendar, Globe, Building2 } from 'lucide-react';
 import { Card, CardContent, CardFooter } from '@/components/ui/Card';
 import { Badge, jobStatusVariant } from '@/components/ui/Badge';
 import { formatDate, formatSalary } from '@/utils';
-import type { Job } from '@/types/job.types';
+import type { Job } from '../job.types';
 
 interface JobCardProps {
   job: Job;

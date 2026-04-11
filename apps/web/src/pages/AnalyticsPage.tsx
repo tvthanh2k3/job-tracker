@@ -1,8 +1,8 @@
 import { Briefcase, CheckCircle, FileText } from 'lucide-react'
 import { useAnalyticsSummary } from '@/features/analytics/useAnalytics'
-import KpiCard from '@/features/analytics/KpiCard'
-import StatusPieChart from '@/features/analytics/StatusPieChart'
-import ApplicationTimeline from '@/features/analytics/ApplicationTimeline'
+import { KpiCard } from '@/features/analytics'
+import { StatusPieChart } from '@/features/analytics'
+import { ApplicationTimeline } from '@/features/analytics'
 import { Spinner } from '@/components/ui/Spinner'
 
 export default function AnalyticsPage() {

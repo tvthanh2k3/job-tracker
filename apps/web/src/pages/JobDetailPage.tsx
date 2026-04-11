@@ -6,9 +6,13 @@ import { Badge, jobStatusVariant } from '@/components/ui/Badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Modal } from '@/components/ui/Modal';
 import { Spinner } from '@/components/ui/Spinner';
-import { useJob, useUpdateJob, useDeleteJob } from '@/features/jobs/useJobs';
-import { JobForm } from '@/features/jobs/JobForm';
-import { InterviewList } from '@/features/jobs/InterviewList';
+import {
+  useJob,
+  useUpdateJob,
+  useDeleteJob,
+  JobForm,
+  InterviewList
+} from '@/features/jobs';
 import { formatSalary, formatDate } from '@/utils';
 
 export default function JobDetailPage() {

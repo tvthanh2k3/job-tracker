@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { jobsApi } from './jobsApi';
-import type { JobFilters, CreateJobRequest, UpdateJobRequest, UpdateJobStatusRequest } from '@/types/job.types';
+import { jobsApi } from '../jobsApi';
+import type { JobFilters, CreateJobRequest, UpdateJobRequest, UpdateJobStatusRequest } from '../job.types';
 import { toast } from '@/components/ui/Toast';
 import { jobKeys } from '@/constants/queryKeys';
 

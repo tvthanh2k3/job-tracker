@@ -1,5 +1,5 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
-import type { StatusBreakdownItem } from '@/types/analytics.types'
+import type { StatusBreakdownItem } from './analytics.types'
 
 interface StatusPieChartProps {
   data: StatusBreakdownItem[]

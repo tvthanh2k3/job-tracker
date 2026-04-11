@@ -3,7 +3,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Building2, MapPin, DollarSign, GripVertical } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { formatSalary } from '@/utils';
-import type { Job } from '@/types/job.types';
+import type { Job } from '@/features/jobs';
 
 interface KanbanCardProps {
   job: Job;

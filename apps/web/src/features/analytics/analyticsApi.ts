@@ -1,5 +1,5 @@
 import { api } from '@/lib/axios'
-import type { AnalyticsSummary } from '@/types/analytics.types'
+import type { AnalyticsSummary } from './analytics.types'
 
 export const analyticsApi = {
   getSummary: async (): Promise<AnalyticsSummary> => {

@@ -1,6 +1,15 @@
 import axios from 'axios'
 import { useAuthStore } from '@/stores/authStore'
-import { toast } from '@/components/ui/Toast'
+
+type NotifyFn = (title: string, description?: string) => void
+
+let _notifyError: NotifyFn = (title, description) => {
+  console.error('[axios]', title, description)
+}
+
+export function setAxiosErrorNotifier(fn: NotifyFn) {
+  _notifyError = fn
+}
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
@@ -26,7 +35,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       useAuthStore.getState().logout()
       if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
-        toast.error('Phiên đăng nhập hết hạn', 'Vui lòng đăng nhập lại')
+        _notifyError('Phiên đăng nhập hết hạn', 'Vui lòng đăng nhập lại')
         window.location.href = '/login'
       }
     }

@@ -4,6 +4,7 @@ import AppLayout from '@/components/layout/AppLayout'
 import AuthLayout from '@/components/layout/AuthLayout'
 import ProtectedRoute from './ProtectedRoute'
 import LoadingSpinner from '@/components/shared/LoadingSpinner'
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary'
 
 // Lazy-loaded pages for code splitting
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
@@ -15,13 +16,14 @@ const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage'))
 const AIToolsPage = lazy(() => import('@/pages/AIToolsPage'))
 
 const withSuspense = (Component: React.LazyExoticComponent<() => React.JSX.Element>) => (
-  <Suspense fallback={<LoadingSpinner fullScreen />}>
-    <Component />
-  </Suspense>
+  <ErrorBoundary>
+    <Suspense fallback={<LoadingSpinner fullScreen />}>
+      <Component />
+    </Suspense>
+  </ErrorBoundary>
 )
 
 export const router = createBrowserRouter([
-  // Public routes (auth layout)
   {
     element: <AuthLayout />,
     children: [
@@ -29,7 +31,6 @@ export const router = createBrowserRouter([
       { path: '/register', element: withSuspense(RegisterPage) },
     ],
   },
-  // Protected routes (app layout)
   {
     element: (
       <ProtectedRoute>
@@ -45,6 +46,5 @@ export const router = createBrowserRouter([
       { path: '/ai-tools', element: withSuspense(AIToolsPage) },
     ],
   },
-  // Fallback
   { path: '*', element: <Navigate to="/dashboard" replace /> },
 ])

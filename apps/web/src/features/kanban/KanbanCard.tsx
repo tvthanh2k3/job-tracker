@@ -2,7 +2,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { Building2, MapPin, DollarSign, GripVertical } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
-import { formatSalary } from '@/lib/utils';
+import { formatSalary } from '@/utils';
 import type { Job } from '@/types/job.types';
 
 interface KanbanCardProps {

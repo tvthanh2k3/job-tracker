@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import { useUiStore } from '@/stores/uiStore'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 
 export default function AppLayout() {
   const sidebarOpen = useUiStore((s) => s.sidebarOpen)

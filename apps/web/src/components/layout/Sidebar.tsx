@@ -6,7 +6,7 @@ import {
   Sparkles,
   ChevronLeft,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 import { useUiStore } from '@/stores/uiStore'
 
 const navItems = [

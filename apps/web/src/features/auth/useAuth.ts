@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { toast } from '@/components/ui/Toast'
 import { useNavigate } from 'react-router-dom'
 import type { LoginRequest, RegisterRequest } from '@/types/user.types'
+import { authKeys } from '@/constants/queryKeys'
 
 export function useLogin() {
   const setToken = useAuthStore((s) => s.setToken)
@@ -47,7 +48,7 @@ export function useMe() {
   const token = useAuthStore((s) => s.token)
   
   return useQuery({
-    queryKey: ['me'],
+    queryKey: authKeys.me,
     queryFn: authApi.getMe,
     enabled: !!token,
     staleTime: 1000 * 60 * 60, // 1 hour

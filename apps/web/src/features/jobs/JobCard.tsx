@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { MapPin, DollarSign, Calendar, Globe, Building2 } from 'lucide-react';
 import { Card, CardContent, CardFooter } from '@/components/ui/Card';
 import { Badge, jobStatusVariant } from '@/components/ui/Badge';
-import { formatDate, formatSalary } from '@/lib/utils';
+import { formatDate, formatSalary } from '@/utils';
 import type { Job } from '@/types/job.types';
 
 interface JobCardProps {

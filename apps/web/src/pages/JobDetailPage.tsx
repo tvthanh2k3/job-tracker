@@ -9,7 +9,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import { useJob, useUpdateJob, useDeleteJob } from '@/features/jobs/useJobs';
 import { JobForm } from '@/features/jobs/JobForm';
 import { InterviewList } from '@/features/jobs/InterviewList';
-import { formatSalary, formatDate } from '@/lib/utils';
+import { formatSalary, formatDate } from '@/utils';
 
 export default function JobDetailPage() {
   const { id } = useParams<{ id: string }>();

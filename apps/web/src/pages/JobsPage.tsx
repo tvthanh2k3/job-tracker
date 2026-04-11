@@ -10,6 +10,7 @@ import {
   JobForm,
   useJobs,
   useCreateJob,
+  type CreateJobRequest
 } from '@/features/jobs';
 
 export default function JobsPage() {
@@ -29,7 +30,7 @@ export default function JobsPage() {
 
   const { mutate: createJob, isPending: isCreating } = useCreateJob();
 
-  const handleCreateJob = (data: any) => {
+  const handleCreateJob = (data: CreateJobRequest) => {
     createJob(data, {
       onSuccess: () => {
         setIsModalOpen(false);

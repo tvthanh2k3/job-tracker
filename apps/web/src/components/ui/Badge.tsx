@@ -8,7 +8,6 @@ export type BadgeVariant =
   | 'info'
   | 'outline'
 
-// Job status → badge variant mapping (used across the app)
 export const jobStatusVariant: Record<string, BadgeVariant> = {
   Wishlist: 'outline',
   Applied: 'info',

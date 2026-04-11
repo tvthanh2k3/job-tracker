@@ -26,7 +26,7 @@ export default function StatusPieChart({ data }: StatusPieChartProps) {
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
-          <Tooltip 
+          <Tooltip
             formatter={(value: any, name: any, props: any) => [`${value} (${props.payload.percentage.toFixed(1)}%)`, name]}
           />
           <Legend />

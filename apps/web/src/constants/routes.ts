@@ -3,6 +3,7 @@ export const ROUTES = {
   REGISTER: '/register',
   DASHBOARD: '/dashboard',
   JOBS: '/jobs',
+  JOB_DETAIL_PATTERN: '/jobs/:id',
   JOB_DETAIL: (id: string) => `/jobs/${id}`,
   ANALYTICS: '/analytics',
   AI_TOOLS: '/ai-tools',

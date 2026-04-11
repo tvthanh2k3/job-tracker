@@ -5,6 +5,8 @@ import { toast } from '@/components/ui/Toast'
 import { useNavigate } from 'react-router-dom'
 import type { LoginRequest, RegisterRequest } from '../auth.types'
 import { authKeys } from '@/constants/queryKeys'
+import { ROUTES } from '@/constants/routes'
+import type { AxiosError } from 'axios'
 
 export function useLogin() {
   const setToken = useAuthStore((s) => s.setToken)
@@ -17,9 +19,9 @@ export function useLogin() {
       setToken(data.token)
       setUser(data.user)
       toast.success('Đăng nhập thành công!', 'Chào mừng bạn quay lại.')
-      navigate('/dashboard', { replace: true })
+      navigate(ROUTES.DASHBOARD, { replace: true })
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{message?: string}>) => {
       toast.error('Đăng nhập thất bại', error.response?.data?.message || 'Thông tin đăng nhập không hợp lệ')
     },
   })
@@ -36,9 +38,9 @@ export function useRegister() {
       setToken(data.token)
       setUser(data.user)
       toast.success('Tạo tài khoản thành công!', 'Chào mừng đến với Job Tracker.')
-      navigate('/dashboard', { replace: true })
+      navigate(ROUTES.DASHBOARD, { replace: true })
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{message?: string}>) => {
       toast.error('Tạo tài khoản thất bại', error.response?.data?.message || 'Có lỗi xảy ra, vui lòng thử lại sau')
     },
   })

@@ -1,5 +1,5 @@
 export { useLogin, useRegister, useMe } from './hooks/useAuth'
 export { authApi } from './authApi'
+export { LoginForm } from './components/LoginForm'
+export { RegisterForm } from './components/RegisterForm'
 export type { User, AuthResponse, LoginRequest, RegisterRequest } from './auth.types'
-export { default as LoginForm } from './components/LoginForm'
-export { default as RegisterForm } from './components/RegisterForm'

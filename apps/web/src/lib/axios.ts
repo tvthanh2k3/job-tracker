@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { ROUTES } from '@/constants/routes'
 import { useAuthStore } from '@/stores/authStore'
 
 type NotifyFn = (title: string, description?: string) => void
@@ -34,9 +35,9 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       useAuthStore.getState().logout()
-      if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+      if (window.location.pathname !== ROUTES.LOGIN && window.location.pathname !== ROUTES.REGISTER) {
         _notifyError('Phiên đăng nhập hết hạn', 'Vui lòng đăng nhập lại')
-        window.location.href = '/login'
+        window.location.href = ROUTES.LOGIN
       }
     }
     return Promise.reject(error)

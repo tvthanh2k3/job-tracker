@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { ROUTES } from '@/constants/routes'
 import { lazy, Suspense } from 'react'
 import AppLayout from '@/components/layout/AppLayout'
 import AuthLayout from '@/components/layout/AuthLayout'
@@ -6,7 +7,6 @@ import ProtectedRoute from './ProtectedRoute'
 import LoadingSpinner from '@/components/shared/LoadingSpinner'
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary'
 
-// Lazy-loaded pages for code splitting
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const RegisterPage = lazy(() => import('@/pages/RegisterPage'))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
@@ -27,8 +27,8 @@ export const router = createBrowserRouter([
   {
     element: <AuthLayout />,
     children: [
-      { path: '/login', element: withSuspense(LoginPage) },
-      { path: '/register', element: withSuspense(RegisterPage) },
+      { path: ROUTES.LOGIN, element: withSuspense(LoginPage) },
+      { path: ROUTES.REGISTER, element: withSuspense(RegisterPage) },
     ],
   },
   {
@@ -38,13 +38,13 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { path: '/', element: <Navigate to="/dashboard" replace /> },
-      { path: '/dashboard', element: withSuspense(DashboardPage) },
-      { path: '/jobs', element: withSuspense(JobsPage) },
-      { path: '/jobs/:id', element: withSuspense(JobDetailPage) },
-      { path: '/analytics', element: withSuspense(AnalyticsPage) },
-      { path: '/ai-tools', element: withSuspense(AIToolsPage) },
+      { path: '/', element: <Navigate to={ROUTES.DASHBOARD} replace /> },
+      { path: ROUTES.DASHBOARD, element: withSuspense(DashboardPage) },
+      { path: ROUTES.JOBS, element: withSuspense(JobsPage) },
+      { path: ROUTES.JOB_DETAIL_PATTERN, element: withSuspense(JobDetailPage) },
+      { path: ROUTES.ANALYTICS, element: withSuspense(AnalyticsPage) },
+      { path: ROUTES.AI_TOOLS, element: withSuspense(AIToolsPage) },
     ],
   },
-  { path: '*', element: <Navigate to="/dashboard" replace /> },
+  { path: '*', element: <Navigate to={ROUTES.DASHBOARD} replace /> },
 ])

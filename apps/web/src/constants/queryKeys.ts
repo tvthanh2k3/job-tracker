@@ -1,4 +1,4 @@
-import type { JobFilters } from '@/features/jobs'
+import type { JobFiltersType as JobFilters } from '@/features/jobs'
 
 export const jobKeys = {
   all: ['jobs'] as const,

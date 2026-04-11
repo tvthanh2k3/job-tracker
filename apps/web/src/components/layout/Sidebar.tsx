@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { ROUTES } from '@/constants/routes'
 import {
   LayoutDashboard,
   Briefcase,
@@ -6,14 +7,14 @@ import {
   Sparkles,
   ChevronLeft,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 import { useUiStore } from '@/stores/uiStore'
 
 const navItems = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/jobs', icon: Briefcase, label: 'Jobs' },
-  { to: '/analytics', icon: BarChart3, label: 'Analytics' },
-  { to: '/ai-tools', icon: Sparkles, label: 'AI Tools' },
+  { to: ROUTES.DASHBOARD, icon: LayoutDashboard, label: 'Dashboard' },
+  { to: ROUTES.JOBS, icon: Briefcase, label: 'Jobs' },
+  { to: ROUTES.ANALYTICS, icon: BarChart3, label: 'Analytics' },
+  { to: ROUTES.AI_TOOLS, icon: Sparkles, label: 'AI Tools' },
 ]
 
 export default function Sidebar() {

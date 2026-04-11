@@ -6,10 +6,16 @@ import { Badge, jobStatusVariant } from '@/components/ui/Badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Modal } from '@/components/ui/Modal';
 import { Spinner } from '@/components/ui/Spinner';
-import { useJob, useUpdateJob, useDeleteJob } from '@/features/jobs/useJobs';
-import { JobForm } from '@/features/jobs/JobForm';
-import { InterviewList } from '@/features/jobs/InterviewList';
-import { formatSalary, formatDate } from '@/lib/utils';
+import {
+  useJob,
+  useUpdateJob,
+  useDeleteJob,
+  JobForm,
+  InterviewList,
+  type UpdateJobRequest
+} from '@/features/jobs';
+import { formatSalary, formatDate } from '@/utils';
+import { ROUTES } from '@/constants/routes';
 
 export default function JobDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -30,12 +36,12 @@ export default function JobDetailPage() {
     return (
       <div className="py-24 text-center">
         <h2 className="text-xl font-semibold mb-2">Không tìm thấy công việc</h2>
-        <Button variant="outline" onClick={() => navigate('/jobs')}>Quay lại danh sách</Button>
+        <Button variant="outline" onClick={() => navigate(ROUTES.JOBS)}>Quay lại danh sách</Button>
       </div>
     );
   }
 
-  const handleUpdate = (data: any) => {
+  const handleUpdate = (data: UpdateJobRequest) => {
     updateJob({ id: job.id, data }, {
       onSuccess: () => setIsEditModalOpen(false)
     });
@@ -43,13 +49,13 @@ export default function JobDetailPage() {
 
   const handleDelete = () => {
     deleteJob(job.id, {
-      onSuccess: () => navigate('/jobs')
+      onSuccess: () => navigate(ROUTES.JOBS)
     });
   };
 
   return (
     <div className="max-w-4xl mx-auto pb-12">
-      <Button variant="ghost" className="mb-6 -ml-4" onClick={() => navigate('/jobs')}>
+      <Button variant="ghost" className="mb-6 -ml-4" onClick={() => navigate(ROUTES.JOBS)}>
         <ArrowLeft className="w-4 h-4 mr-2" /> Quay lại
       </Button>
 

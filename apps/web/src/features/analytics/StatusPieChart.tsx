@@ -1,5 +1,5 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
-import type { StatusBreakdownItem } from '@/types/analytics.types'
+import type { StatusBreakdownItem } from './analytics.types'
 
 interface StatusPieChartProps {
   data: StatusBreakdownItem[]
@@ -26,7 +26,7 @@ export default function StatusPieChart({ data }: StatusPieChartProps) {
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
-          <Tooltip 
+          <Tooltip
             formatter={(value: any, name: any, props: any) => [`${value} (${props.payload.percentage.toFixed(1)}%)`, name]}
           />
           <Legend />

@@ -4,33 +4,41 @@ import * as z from 'zod'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { useLogin } from './useAuth'
+import { useRegister } from '../hooks/useAuth'
 
-const loginSchema = z.object({
+const registerSchema = z.object({
+  fullName: z.string().min(2, 'Họ và tên phải có ít nhất 2 ký tự'),
   email: z.string().min(1, 'Vui lòng nhập email').email('Email không đúng định dạng'),
   password: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
 })
 
-type LoginValues = z.infer<typeof loginSchema>
+type RegisterValues = z.infer<typeof registerSchema>
 
-export function LoginForm() {
-  const { mutate: login, isPending } = useLogin()
+export function RegisterForm() {
+  const { mutate: registerUser, isPending } = useRegister()
   
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { email: '', password: '' },
+  } = useForm<RegisterValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { fullName: '', email: '', password: '' },
   })
 
-  const onSubmit = (data: LoginValues) => {
-    login(data)
+  const onSubmit = (data: RegisterValues) => {
+    registerUser(data)
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <Input
+        label="Họ và tên"
+        placeholder="John Doe"
+        error={errors.fullName?.message}
+        {...register('fullName')}
+      />
+
       <Input
         label="Email"
         type="email"
@@ -48,13 +56,13 @@ export function LoginForm() {
       />
 
       <Button type="submit" className="w-full" loading={isPending}>
-        Đăng nhập
+        Tạo tài khoản
       </Button>
 
       <div className="text-center text-sm text-muted-foreground mt-4">
-        Chưa có tài khoản?{' '}
-        <Link to="/register" className="font-semibold text-primary hover:underline transition-all">
-          Đăng ký ngay
+        Đã có tài khoản?{' '}
+        <Link to="/login" className="font-semibold text-primary hover:underline transition-all">
+          Đăng nhập
         </Link>
       </div>
     </form>

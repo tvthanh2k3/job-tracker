@@ -1,9 +1,9 @@
-import { useJobs } from '@/features/jobs/useJobs';
-import { KanbanBoard } from '@/features/kanban/KanbanBoard';
+import { useJobs } from '@/features/jobs';
+import { KanbanBoard } from '@/features/kanban';
 import { Spinner } from '@/components/ui/Spinner';
 
 export default function DashboardPage() {
-  const { data: paginatedJobs, isLoading, isError } = useJobs({ pageSize: 100 }); // fetch large amount for board
+  const { data: paginatedJobs, isLoading, isError } = useJobs({ pageSize: 100 });
 
   return (
     <div className="flex flex-col h-full overflow-hidden">

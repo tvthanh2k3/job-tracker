@@ -3,10 +3,15 @@ import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Spinner } from '@/components/ui/Spinner';
-import { JobFilters, type JobFiltersState } from '@/features/jobs/JobFilters';
-import { JobCard } from '@/features/jobs/JobCard';
-import { JobForm } from '@/features/jobs/JobForm';
-import { useJobs, useCreateJob } from '@/features/jobs/useJobs';
+import {
+  JobFilters,
+  type JobFiltersState,
+  JobCard,
+  JobForm,
+  useJobs,
+  useCreateJob,
+  type CreateJobRequest
+} from '@/features/jobs';
 
 export default function JobsPage() {
   const [filters, setFilters] = useState<JobFiltersState>({
@@ -25,7 +30,7 @@ export default function JobsPage() {
 
   const { mutate: createJob, isPending: isCreating } = useCreateJob();
 
-  const handleCreateJob = (data: any) => {
+  const handleCreateJob = (data: CreateJobRequest) => {
     createJob(data, {
       onSuccess: () => {
         setIsModalOpen(false);
@@ -71,23 +76,22 @@ export default function JobsPage() {
         </div>
       )}
 
-      {/* Pagination Placeholder (Backend requires page & pageSize support properly to utilize) */}
       {paginatedJobs && paginatedJobs.totalPages > 1 && (
         <div className="flex justify-center mt-8">
           <span className="text-sm text-muted-foreground">Hiển thị phân trang ở đây trong tương lai.</span>
         </div>
       )}
 
-      <Modal 
-        open={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        title="Thêm công việc mới" 
+      <Modal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Thêm công việc mới"
         size="lg"
       >
-        <JobForm 
-          onSubmit={handleCreateJob} 
-          isSubmitting={isCreating} 
-          onCancel={() => setIsModalOpen(false)} 
+        <JobForm
+          onSubmit={handleCreateJob}
+          isSubmitting={isCreating}
+          onCancel={() => setIsModalOpen(false)}
         />
       </Modal>
     </div>

@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Textarea } from '@/components/ui/Textarea';
-import { JobStatus, RemoteStatus } from '@/types/job.types';
-import type { Job, CreateJobRequest } from '@/types/job.types';
+import { JobStatus, RemoteStatus } from '../job.types';
+import type { Job, CreateJobRequest } from '../job.types';
 
 const jobSchema = z.object({
   title: z.string().min(1, 'Nghề nghiệp là bắt buộc'),

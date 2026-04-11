@@ -1,9 +1,8 @@
 import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
-import { Toaster } from '@/components/ui/Toast'
 import { useUiStore } from '@/stores/uiStore'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 
 export default function AppLayout() {
   const sidebarOpen = useUiStore((s) => s.sidebarOpen)
@@ -12,7 +11,6 @@ export default function AppLayout() {
     <div className="flex h-screen bg-background overflow-hidden">
       <Sidebar />
 
-      {/* Main content — shifts right when sidebar is open */}
       <div
         className={cn(
           'flex flex-col flex-1 min-w-0 transition-all duration-300',
@@ -24,8 +22,6 @@ export default function AppLayout() {
           <Outlet />
         </main>
       </div>
-
-      <Toaster />
     </div>
   )
 }

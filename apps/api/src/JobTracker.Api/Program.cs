@@ -1,4 +1,6 @@
 using JobTracker.Api;
+using JobTracker.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +10,9 @@ builder.Services.InstallServices(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Run migrations and seed data
+await app.InitializeDatabaseAsync();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

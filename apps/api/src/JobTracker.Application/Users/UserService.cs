@@ -12,17 +12,19 @@ namespace JobTracker.Application.Users;
 public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
 
-    public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+    public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
+        _userRepository = userRepository;
         _mapper = mapper;
     }
 
     public async Task<UserDto?> GetUserByIdAsync(Guid id)
     {
-        var user = await _unitOfWork.Repository<User>().GetByIdAsync(id);
+        var user = await _userRepository.GetUserWithRolesAsync(id);
         return user == null ? null : _mapper.Map<UserDto>(user);
     }
 
@@ -40,7 +42,7 @@ public class UserService : IUserService
 
     public async Task<bool> UpdateUserAsync(Guid id, UpdateUserDto updateUserDto)
     {
-        var existingUser = await _unitOfWork.Repository<User>().GetByIdAsync(id);
+        var existingUser = await _userRepository.GetUserWithRolesAsync(id);
         if (existingUser == null) return false;
 
         _mapper.Map(updateUserDto, existingUser);

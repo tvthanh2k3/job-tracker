@@ -11,6 +11,8 @@ public class JobTrackerDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Job> Jobs => Set<Job>();
     public DbSet<Interview> Interviews => Set<Interview>();
+    public DbSet<Role> Roles => Set<Role>();
+    public DbSet<UserRole> UserRoles => Set<UserRole>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -11,4 +11,5 @@ public class User : BaseEntity
 
     // Navigation properties
     public ICollection<Job> Jobs { get; set; } = new List<Job>();
+    public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

@@ -1,5 +1,6 @@
 using JobTracker.Application.Users;
 using JobTracker.Application.Users.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobTracker.Api.Controllers;
@@ -15,6 +16,7 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
@@ -24,6 +26,7 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
+    [Authorize(Policy = "SuperAdminOnly")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserDto createUserDto)
     {
@@ -32,6 +35,7 @@ public class UsersController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
+    [Authorize(Policy = "SuperAdminOnly")]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserDto updateUserDto)
     {
@@ -41,6 +45,7 @@ public class UsersController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Policy = "SuperAdminOnly")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {

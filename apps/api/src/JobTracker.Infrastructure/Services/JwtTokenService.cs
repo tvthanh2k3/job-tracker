@@ -30,6 +30,17 @@ public class JwtTokenService : IJwtTokenService
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
+        if (user.UserRoles != null)
+        {
+            foreach (var userRole in user.UserRoles)
+            {
+                if (userRole.Role != null)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name));
+                }
+            }
+        }
+
         var jwtSettings = _configuration.GetSection("JwtSettings");
         var secret = jwtSettings["Secret"];
         var issuer = jwtSettings["Issuer"];

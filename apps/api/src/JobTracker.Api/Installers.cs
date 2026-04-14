@@ -1,6 +1,8 @@
 using JobTracker.Application;
 using JobTracker.Infrastructure;
+using JobTracker.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -8,6 +10,14 @@ namespace JobTracker.Api;
 
 public static class Installers
 {
+    public static async Task InitializeDatabaseAsync(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<JobTrackerDbContext>();
+        await db.Database.MigrateAsync();
+        await DataSeeder.SeedAsync(db);
+    }
+
     public static void InstallServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers();
@@ -18,6 +28,7 @@ public static class Installers
 
         InstallCors(services, configuration);
         InstallJwt(services, configuration);
+        InstallAuthorization(services);
     }
 
     private static void InstallCors(IServiceCollection services, IConfiguration configuration)
@@ -31,6 +42,15 @@ public static class Installers
                       .AllowAnyHeader()
                       .AllowAnyMethod();
             });
+        });
+    }
+
+    private static void InstallAuthorization(IServiceCollection services)
+    {
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("SuperAdminOnly", p => p.RequireRole("SuperAdmin"));
+            options.AddPolicy("UserOnly", p => p.RequireRole("User"));
         });
     }
 

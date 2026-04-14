@@ -13,12 +13,14 @@ namespace JobTracker.Application.Auth;
 public class AuthService : IAuthService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IUserRepository _userRepository;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IMapper _mapper;
 
-    public AuthService(IUnitOfWork unitOfWork, IJwtTokenService jwtTokenService, IMapper mapper)
+    public AuthService(IUnitOfWork unitOfWork, IUserRepository userRepository, IJwtTokenService jwtTokenService, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
+        _userRepository = userRepository;
         _jwtTokenService = jwtTokenService;
         _mapper = mapper;
     }
@@ -54,7 +56,7 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponseDto?> LoginAsync(LoginDto loginDto)
     {
-        var user = await _unitOfWork.Repository<User>().GetFirstOrDefaultAsync(u => u.Email == loginDto.Email);
+        var user = await _userRepository.GetUserByEmailWithRolesAsync(loginDto.Email);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
         {
@@ -72,7 +74,7 @@ public class AuthService : IAuthService
 
     public async Task<UserDto?> GetMeAsync(Guid userId)
     {
-        var user = await _unitOfWork.Repository<User>().GetByIdAsync(userId);
+        var user = await _userRepository.GetUserWithRolesAsync(userId);
         return user == null ? null : _mapper.Map<UserDto>(user);
     }
 }

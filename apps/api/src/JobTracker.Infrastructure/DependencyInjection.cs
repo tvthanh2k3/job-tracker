@@ -20,6 +20,7 @@ public static class DependencyInjection
         // Registry for Repositories and UnitOfWork
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         // Registry for Services
         services.AddScoped<JobTracker.Application.Auth.IJwtTokenService, JobTracker.Infrastructure.Services.JwtTokenService>();

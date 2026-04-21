@@ -16,7 +16,14 @@ await app.InitializeDatabaseAsync();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapScalarApiReference(options =>
+    {
+        options.AddPreferredSecuritySchemes("Bearer");
+        options.AddHttpAuthentication("Bearer", auth =>
+        {
+            auth.Token = "";
+        });
+    });
 }
 
 app.UseHttpsRedirection();

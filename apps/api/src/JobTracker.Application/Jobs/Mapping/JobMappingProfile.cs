@@ -9,7 +9,11 @@ public class JobMappingProfile : Profile
     public JobMappingProfile()
     {
         CreateMap<Job, JobDto>();
-        CreateMap<CreateJobDto, Job>();
-        CreateMap<UpdateJobDto, Job>();
+
+        CreateMap<CreateJobDto, Job>()
+            .ForMember(dest => dest.UserId, opt => opt.Ignore());
+
+        CreateMap<UpdateJobDto, Job>()
+            .ForMember(dest => dest.UserId, opt => opt.Ignore());
     }
 }

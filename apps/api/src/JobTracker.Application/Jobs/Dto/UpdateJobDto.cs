@@ -4,7 +4,6 @@ namespace JobTracker.Application.Jobs.Dto;
 
 public class UpdateJobDto
 {
-	public Guid UserId { get; set; }
 	public string Title { get; set; } = string.Empty;
 	public string Company { get; set; } = string.Empty;
 	public string? Url { get; set; }

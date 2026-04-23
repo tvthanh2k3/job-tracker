@@ -25,28 +25,33 @@ public class JobService : IJobService
         return _mapper.Map<IEnumerable<JobDto>>(jobs);
     }
 
-    public async Task<JobDto?> GetJobByIdAsync(Guid id)
+    public async Task<JobDto?> GetJobByIdAsync(Guid id, Guid userId)
     {
         var job = await _unitOfWork.Repository<Job>().GetByIdAsync(id);
-        return job == null ? null : _mapper.Map<JobDto>(job);
+
+        if (job == null || job.UserId != userId) return null;
+
+        return _mapper.Map<JobDto>(job);
     }
 
-    public async Task<JobDto> CreateJobAsync(CreateJobDto createJobDto)
+    public async Task<JobDto> CreateJobAsync(CreateJobDto createJobDto, Guid userId)
     {
         var job = _mapper.Map<Job>(createJobDto);
-        
+
+        job.UserId = userId;
+
         await _unitOfWork.Repository<Job>().AddAsync(job);
         await _unitOfWork.SaveChangesAsync();
 
         return _mapper.Map<JobDto>(job);
     }
 
-    public async Task<bool> UpdateJobAsync(Guid id, UpdateJobDto updateJobDto)
+    public async Task<bool> UpdateJobAsync(Guid id, UpdateJobDto updateJobDto, Guid userId)
     {
         var existingJob = await _unitOfWork.Repository<Job>().GetByIdAsync(id);
-        if (existingJob == null) return false;
 
-        // Map values from DTO to existing entity
+        if (existingJob == null || existingJob.UserId != userId) return false;
+
         _mapper.Map(updateJobDto, existingJob);
         existingJob.UpdatedAt = DateTime.UtcNow;
 
@@ -56,10 +61,11 @@ public class JobService : IJobService
         return true;
     }
 
-    public async Task<bool> DeleteJobAsync(Guid id)
+    public async Task<bool> DeleteJobAsync(Guid id, Guid userId)
     {
         var job = await _unitOfWork.Repository<Job>().GetByIdAsync(id);
-        if (job == null) return false;
+
+        if (job == null || job.UserId != userId) return false;
 
         _unitOfWork.Repository<Job>().Remove(job);
         var result = await _unitOfWork.SaveChangesAsync();

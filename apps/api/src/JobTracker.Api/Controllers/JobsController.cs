@@ -18,40 +18,58 @@ public class JobsController : ControllerBase
         _jobService = jobService;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
+	/// <summary>
+	/// Get the user ID of the logged-in user from the JWT token.
+	/// </summary>
+	private Guid? GetCurrentUserId()
     {
         var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
-        {
-            return Unauthorized();
-        }
+            return null;
 
-        var jobs = await _jobService.GetAllJobsAsync(userId);
+        return userId;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var userId = GetCurrentUserId();
+        if (userId == null) return Unauthorized();
+
+        var jobs = await _jobService.GetAllJobsAsync(userId.Value);
         return Ok(jobs);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var job = await _jobService.GetJobByIdAsync(id);
+        var userId = GetCurrentUserId();
+        if (userId == null) return Unauthorized();
+
+        var job = await _jobService.GetJobByIdAsync(id, userId.Value);
         if (job == null) return NotFound();
-        
+
         return Ok(job);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateJobDto createJobDto)
     {
-        var result = await _jobService.CreateJobAsync(createJobDto);
-        
+        var userId = GetCurrentUserId();
+        if (userId == null) return Unauthorized();
+
+        var result = await _jobService.CreateJobAsync(createJobDto, userId.Value);
+
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateJobDto updateJobDto)
     {
-        var success = await _jobService.UpdateJobAsync(id, updateJobDto);
+        var userId = GetCurrentUserId();
+        if (userId == null) return Unauthorized();
+
+        var success = await _jobService.UpdateJobAsync(id, updateJobDto, userId.Value);
         if (!success) return NotFound();
 
         return NoContent();
@@ -60,7 +78,10 @@ public class JobsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var success = await _jobService.DeleteJobAsync(id);
+        var userId = GetCurrentUserId();
+        if (userId == null) return Unauthorized();
+
+        var success = await _jobService.DeleteJobAsync(id, userId.Value);
         if (!success) return NotFound();
 
         return NoContent();

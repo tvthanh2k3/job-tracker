@@ -16,7 +16,7 @@ export default function Board({ jobs, setJobs, onCardClick }: BoardProps) {
   const onDragStart = (jobId: string) => (e: React.DragEvent) => {
     setDraggingId(jobId);
     e.dataTransfer.effectAllowed = 'move';
-    try { e.dataTransfer.setData('text/plain', jobId); } catch {}
+    try { e.dataTransfer.setData('text/plain', jobId); } catch { /* IE compat */ }
   };
 
   const onDragEnd = () => { setDraggingId(null); setDragOverStage(null); };

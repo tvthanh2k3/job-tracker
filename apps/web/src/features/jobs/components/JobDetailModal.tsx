@@ -28,11 +28,6 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
   const [noteVal, setNoteVal]   = useState(job?.note ?? '');
 
   useEffect(() => {
-    setNoteVal(job?.note ?? '');
-    setTab('overview');
-  }, [job?.id]);
-
-  useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);

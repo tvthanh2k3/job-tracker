@@ -1,7 +1,6 @@
-import { STAGES, STAGE_BY_ID } from '@/types/stage';
+import { STAGES } from '@/types/stage';
 import type { Job } from '@/types/job';
 import Icon from '@/components/Icon';
-import StagePill from '@/components/StagePill';
 
 interface SidebarProps {
   jobs: Job[];

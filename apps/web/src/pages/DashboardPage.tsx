@@ -4,7 +4,6 @@ import type { ViewMode } from '@/types/view';
 import { SAMPLE_JOBS } from '@/features/jobs/data/mockJobs';
 import Sidebar from '@/components/layout/Sidebar';
 import Header from '@/components/layout/Header';
-import StatsBanner from '@/features/jobs/components/StatsBanner';
 import JobDetailModal from '@/features/jobs/components/JobDetailModal';
 import QuickAdd from '@/features/jobs/components/QuickAdd';
 import TableView from '@/features/jobs/components/TableView';
@@ -67,8 +66,6 @@ export default function DashboardPage() {
           setView={setView}
           onQuickAdd={() => setQuickOpen(true)}
         />
-        <StatsBanner jobs={jobs} />
-
         {view === 'kanban' && (
           <Board jobs={filtered} setJobs={setJobs} onCardClick={(j) => setOpenJobId(j.id)} />
         )}

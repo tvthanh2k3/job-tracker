@@ -10,9 +10,8 @@ export interface Stage {
 }
 
 export const STAGES: Stage[] = [
-  { id: 'saved',     label: 'Quan tâm',       tone: 'neutral', dot: '#9CA3AF' },
   { id: 'applied',   label: 'Đã ứng tuyển',   tone: 'blue',    dot: '#3B82F6' },
-  { id: 'phone',     label: 'PV sơ bộ',       tone: 'purple',  dot: '#8B5CF6' },
+  { id: 'test',      label: 'Làm bài test',   tone: 'purple',  dot: '#8B5CF6' },
   { id: 'interview', label: 'Phỏng vấn',      tone: 'yellow',  dot: '#EAB308' },
   { id: 'offer',     label: 'Có offer',       tone: 'green',   dot: '#10B981' },
   { id: 'rejected',  label: 'Bị từ chối',     tone: 'red',     dot: '#EF4444' },

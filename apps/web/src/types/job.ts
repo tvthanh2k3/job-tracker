@@ -1,7 +1,6 @@
 export type StageId =
-  | 'saved'
   | 'applied'
-  | 'phone'
+  | 'test'
   | 'interview'
   | 'offer'
   | 'rejected'

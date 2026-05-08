@@ -38,7 +38,7 @@ export default function QuickAdd({ open, onClose, onCreate }: QuickAddProps) {
       location:  location.trim() || 'Remote',
       salary:    salary.trim(),
       stage,
-      appliedAt: stage === 'saved' ? '' : new Date().toISOString().slice(0, 10),
+      appliedAt: new Date().toISOString().slice(0, 10),
       jdLink:    link.trim(),
       note:      note.trim(),
       source:    'Tự nhập',

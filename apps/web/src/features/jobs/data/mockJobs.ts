@@ -17,11 +17,12 @@ export const SAMPLE_JOBS: Job[] = [
   {
     id: 'j2', company: 'Anthropic', title: 'Kỹ sư sản phẩm, Claude',
     location: 'San Francisco · Hybrid', salary: '$220k – $300k',
-    appliedAt: '2026-04-18', stage: 'phone', source: 'Website công ty', priority: 'dream',
+    appliedAt: '2026-04-18', stage: 'test', source: 'Website công ty', priority: 'dream',
     jdLink: 'https://anthropic.com/jobs/product-engineer',
     note: 'Vị trí mơ ước. Đã dành một cuối tuần làm side project với API của họ để có thứ kể lúc phỏng vấn.',
     interviews: [
-      { round: 'Sơ bộ với recruiter', with: 'Jordan Kim', date: '2026-04-26', status: 'upcoming', notes: 'Chuẩn bị câu hỏi về roadmap sản phẩm Claude.' },
+      { round: 'Cuộc gọi với recruiter', with: 'Jordan Kim', date: '2026-04-26', status: 'passed', notes: 'Chuẩn bị câu hỏi về roadmap sản phẩm Claude.' },
+      { round: 'Bài test kỹ thuật', with: 'Làm offline', date: '2026-05-03', status: 'upcoming', notes: 'Thiết kế tính năng AI + bài toán API integration. Deadline 3 ngày.' },
     ],
   },
   {
@@ -71,9 +72,9 @@ export const SAMPLE_JOBS: Job[] = [
   {
     id: 'j7', company: 'OpenAI', title: 'Thành viên kỹ thuật cao cấp',
     location: 'San Francisco', salary: '$300k – $450k',
-    appliedAt: '', stage: 'saved',
+    appliedAt: '2026-05-01', stage: 'applied',
     jdLink: 'https://openai.com/careers',
-    note: 'Đã bookmark. Cần hoàn thiện portfolio + side project ML trước khi nộp đơn.',
+    note: 'Vị trí mơ ước. Đã nộp kèm side project ML. Đang chờ phản hồi từ recruiter.',
     priority: 'dream',
     interviews: [],
   },
@@ -98,12 +99,12 @@ export const SAMPLE_JOBS: Job[] = [
   {
     id: 'j10', company: 'Discord', title: 'Kỹ sư phần mềm cao cấp, Client',
     location: 'Remote · Mỹ', salary: '$180k – $240k',
-    appliedAt: '2026-04-17', stage: 'phone', source: 'Người quen giới thiệu',
+    appliedAt: '2026-04-17', stage: 'test', source: 'Người quen giới thiệu',
     jdLink: 'https://discord.com/careers',
     note: 'Toàn giới thiệu. Recruiter phản hồi trong vòng 2 ngày.',
     interviews: [
       { round: 'Cuộc gọi với recruiter', with: 'Hana Sato', date: '2026-04-24', status: 'passed', notes: 'Trao đổi nhanh. Mức lương khớp.' },
-      { round: 'Phỏng vấn kỹ thuật', with: 'Ben Cruz', date: '2026-04-30', status: 'upcoming', notes: 'Tập trung vào kinh nghiệm real-time/WebSocket.' },
+      { round: 'Bài test kỹ thuật', with: 'Ben Cruz', date: '2026-04-30', status: 'upcoming', notes: 'Tập trung vào kinh nghiệm real-time/WebSocket.' },
     ],
   },
   {
@@ -119,9 +120,9 @@ export const SAMPLE_JOBS: Job[] = [
   {
     id: 'j12', company: 'Spotify', title: 'Kỹ sư Web cao cấp',
     location: 'Remote · EU', salary: '€110k – €150k',
-    appliedAt: '', stage: 'saved',
+    appliedAt: '2026-04-30', stage: 'applied',
     jdLink: 'https://lifeatspotify.com',
-    note: 'Vị trí chỉ tuyển EU. Đang chờ vị trí tương tự cho remote ở Mỹ.',
+    note: 'Vị trí remote EU. Đã ứng tuyển thử, đang chờ xem họ có mở rộng sang APAC không.',
     interviews: [],
   },
   {

@@ -33,7 +33,7 @@ export default function Board({ jobs, setJobs, onCardClick }: BoardProps) {
     setJobs((prev) =>
       prev.map((j) =>
         j.id === draggingId
-          ? { ...j, stage: stageId as Job['stage'], appliedAt: j.appliedAt || (stageId !== 'saved' ? new Date().toISOString().slice(0, 10) : '') }
+          ? { ...j, stage: stageId as Job['stage'], appliedAt: j.appliedAt || new Date().toISOString().slice(0, 10) }
           : j,
       ),
     );

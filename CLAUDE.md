@@ -287,6 +287,46 @@ Each feature module under `features/` owns its own components, hooks, and API qu
 
 ---
 
+## Working Process
+
+Before implementing any feature or change, Claude must follow this sequence strictly:
+
+### Step 1 — Plan
+
+Create a plan that covers:
+- What the feature/change is and why
+- A numbered list of every task to be done, each task mapping to exactly one commit
+- For each task: the files that will be changed and the commit message
+
+Format:
+
+```
+## Plan: <feature name>
+
+**Branch:** `feature/fe/<name>`
+
+| # | Task | Files | Commit message |
+|---|------|-------|----------------|
+| 1 | ... | `src/types/job.ts` | `refactor(jobs): drop saved stage` |
+| 2 | ... | `src/components/Board.tsx` | `refactor(kanban): remove saved logic` |
+```
+
+**Wait for the user to approve the plan before proceeding.**
+
+### Step 2 — Tasks
+
+Once the plan is approved, use **TodoWrite** to create the task list from the plan. Each task = one commit unit.
+
+### Step 3 — Branch
+
+Suggest the branch name and wait for the user to create it. Do not write any code until the branch exists.
+
+### Step 4 — Implement
+
+Implement one task at a time. After finishing each task, output the commit suggestion and **stop** — wait for the user to commit manually and ask to continue before starting the next task.
+
+---
+
 ## Git Workflow
 
 > Always read and follow `.claude/skills/git-workflow.md` for full branch naming, commit conventions, and Claude's role in git operations.

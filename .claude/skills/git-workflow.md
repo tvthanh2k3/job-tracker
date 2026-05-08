@@ -64,6 +64,10 @@ Commit message:
 Reason: one line explaining why these files belong together.
 ```
 
+**Claude must then stop and wait.** Do not implement the next task until the user has committed manually and explicitly asks to continue.
+
+**Exception:** Terminal commands run purely for verification (e.g. `npm run build`, `npm run lint`, `dotnet build`) are diagnostic only — they do not produce a commit suggestion.
+
 Commit after every logical unit — a component, an endpoint, a fix. Do not accumulate changes across multiple units before committing.
 
 ---
@@ -130,6 +134,7 @@ feat(ai): integrate OpenAI for resume optimization
 **Rules:**
 - Use **present tense**, imperative mood: "add" not "added" or "adds"
 - Description must be **2–4 words maximum** — if you need more words, the commit is doing too much; split it
+- **No comma** — a comma means two actions; split into two commits instead
 - No period at the end
 - **No filler words** — avoid "implement", "update", "some", "various", "misc"
 

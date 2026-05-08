@@ -1,112 +1,74 @@
 # Job Tracker
 
-A comprehensive full-stack web application designed to help users manage and optimize their job application process. It acts as a personal productivity tool to track applied jobs, manage statuses via a Kanban board, analyze job search performance, and leverage AI to enhance CVs and Cover Letters.
+A web app to track job applications — log positions, manage pipeline status (Applied → Interview → Offer / Rejected), schedule interviews, and leverage AI to optimize resumes and generate cover letters.
 
-## 🚀 Tech Stack
+## Tech Stack
 
-- **Frontend**: React + Tailwind CSS + TypeScript + React Query + Zustand
-- **Backend**: ASP.NET Core Web API (using .NET 10)
-- **Database**: PostgreSQL (via Entity Framework Core)
-- **Architecture**: Client-Server (RESTful API communication)
-
-## 🏗️ Technical Architecture Overview
-
-The project adopts a clearly separated Client-Server architecture:
-- **Frontend SPA**: The Frontend layer (React) is responsible for the UI, client-side data validation, and state management (Zustand for global state and React Query for server state caching).
-- **Backend API**: The ASP.NET Core backend implements **Clean Architecture** (Api, Application, Domain, Infrastructure). This design strictly separates HTTP routing, application business logic, core entities, and database access.
-- **Data Storage**: Postgres database for data integrity via Entity Framework Core.
-- **Authentication**: Stateless JSON Web Tokens (JWT) mechanism.
-- **External Integrations**: OpenAI API for analyzing and revamping Resumes and auto-generating Cover Letters.
+| Layer | Technologies |
+|---|---|
+| Frontend | React 19, TypeScript, Vite, Tailwind CSS 4, TanStack Query, Zustand, React Router |
+| Backend | ASP.NET Core 10, EF Core, PostgreSQL, JWT Bearer |
 
 ---
 
-## 📂 Folder Structure
+## Prerequisites
 
-### Frontend (`apps/web/`)
-Currently, the UI source code uses the default React Vite initialization structure. In the next phases, the project will be expanded into a **Feature-based architecture**.
+- [Node.js](https://nodejs.org/) 20+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [PostgreSQL](https://www.postgresql.org/) 16+
 
-```text
-src/
-├── assets/             # Directory for static assets
-├── App.css             # Styling for App component
-├── App.tsx             # Root component of the application
-├── index.css           # Tailwind CSS directives and base styles
-└── main.tsx            # Entry point into index.html and UI initialization
-```
-*(In later phases, the frontend structure will be broken down into `features/`, `components/`, `hooks/`, `stores/`, `pages/` to handle business logic for Kanban board, Analytics, AI, etc.)*
+---
 
-### Backend (`apps/api/`)
-The **Clean Architecture** is already set up, dividing specific responsibilities across codebase layers.
+## Getting Started
 
-```text
-src/
-├── JobTracker.Api/           # Presentation Layer
-│   # Handles HTTP requests/responses, Middleware, Controllers
-├── JobTracker.Application/   # Application Layer
-│   # Contains Use Cases, DTOs, Interfaces, specific business logic of the app
-├── JobTracker.Domain/        # Domain Layer
-│   # Data entities (User, Job, Interview), Core Exceptions
-└── JobTracker.Infrastructure/# Infrastructure Layer
-    # DbContext (Entity Framework Core), Repositories, API Integrations (OpenAI, Mail)
+### Backend
+
+```bash
+cd apps/api
+
+# Edit src/JobTracker.Api/appsettings.Development.json → ConnectionStrings:DefaultConnection
+
+dotnet ef database update --project src/JobTracker.Infrastructure --startup-project src/JobTracker.Api
+dotnet run --project src/JobTracker.Api/JobTracker.Api.csproj
 ```
 
----
+API: `https://localhost:5001` · Swagger: `https://localhost:5001/swagger`
 
-## 🗄️ Database Schema
+### Frontend
 
-**PostgreSQL Table Structure**
+```bash
+cd apps/web
+npm install
+npm run dev
+```
 
-1. **Users**
-   - `Id` (UUID, Primary Key)
-   - `Email` (VARCHAR, Unique)
-   - `PasswordHash` (VARCHAR)
-   - `FullName` (VARCHAR)
-   - `CreatedAt` (TIMESTAMP)
+Set `VITE_API_BASE_URL` in `.env` to point at the backend (default: `http://localhost:5000`).
 
-2. **Jobs**
-   - `Id` (UUID, Primary Key)
-   - `UserId` (UUID, Foreign Key -> Users.Id)
-   - `Title` (VARCHAR(150))
-   - `Company` (VARCHAR(150))
-   - `Url` (TEXT)
-   - `Description` (TEXT)
-   - `SalaryRange` (VARCHAR(100))
-   - `Status` (ENUM: _'Applied', 'Interview', 'Offer', 'Rejected'_)
-   - `RemoteStatus` (ENUM: _'Onsite', 'Hybrid', 'Remote'_)
-   - `CreatedAt` (TIMESTAMP), `UpdatedAt` (TIMESTAMP)
-
-3. **Interviews (One-to-Many relationship with Jobs)**
-   - `Id` (UUID, Primary Key)
-   - `JobId` (UUID, Foreign Key -> Jobs.Id)
-   - `ScheduledAt` (TIMESTAMP)
-   - `Round` (VARCHAR) - e.g., "Technical Interview", "HR Round"
-   - `Notes` (TEXT)
-
-4. **AnalyticsMetrics (Optional - Caching or View)**
-   - Tracked to minimize heavy computation queries and reduce resource load.
+App: `http://localhost:5173`
 
 ---
 
-## 🛣️ API Design (RESTful Endpoints)
+## Architecture
 
-**Authentication**
-- `POST   /api/auth/register` - Create a new account
-- `POST   /api/auth/login`    - Verify credentials and return JWT token
-- `GET    /api/auth/me`       - Return user info from Token Header
+Clean Architecture backend + React SPA frontend with feature-based layout.
 
-**Job Management (Jobs CRUD & Kanban)**
-- `GET    /api/jobs`          - Get all user jobs (with Filtering, Pagination)
-- `POST   /api/jobs`          - Create new job info
-- `GET    /api/jobs/{id}`     - Get job details
-- `PUT    /api/jobs/{id}`     - Update the entire job description file
-- `PATCH  /api/jobs/{id}/status` - Update job Kanban status (Drag and drop)
-- `DELETE /api/jobs/{id}`     - Delete job
+```
+apps/
+├── api/src/
+│   ├── JobTracker.Domain/           # Entities, core exceptions
+│   ├── JobTracker.Application/      # Use cases, DTOs, services
+│   ├── JobTracker.Infrastructure/   # EF Core, repositories, OpenAI
+│   └── JobTracker.Api/              # Controllers, middleware
+└── web/src/
+    ├── features/                    # Feature-based modules
+    ├── stores/                      # Zustand global state
+    └── lib/                         # Axios, React Query config
+```
 
-**Analytics**
-- `GET    /api/analytics/summary` - Get high-level KPI metrics (e.g., number of applications, interview rate)
-
-**AI Integrations (AI API)**
-- `POST   /api/ai/optimize-resume` - Input: current resume text + job description -> Result: optimized CV content
-- `POST   /api/ai/generate-cover-letter` - Result: Flexible, tailored cover letter for that specific job
+**Authentication:** Stateless JWT — token stored in `localStorage`, injected via Axios interceptor.
 
 ---
+
+## License
+
+MIT

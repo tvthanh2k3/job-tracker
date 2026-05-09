@@ -14,7 +14,7 @@ interface AuthState {
   clearAuth: () => void
 }
 
-const TOKEN_KEY = 'auth_token'
+const TOKEN_KEY = 'token'
 
 export const useAuthStore = create<AuthState>()((set) => ({
   token: localStorage.getItem(TOKEN_KEY),

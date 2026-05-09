@@ -1,5 +1,4 @@
 import { useMutation } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
 import api from '@/lib/axios'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -15,12 +14,12 @@ interface AuthResponse {
   user: AuthUser
 }
 
-interface LoginPayload {
+export interface LoginPayload {
   email: string
   password: string
 }
 
-interface RegisterPayload {
+export interface RegisterPayload {
   name: string
   email: string
   password: string
@@ -28,28 +27,24 @@ interface RegisterPayload {
 
 export function useLogin() {
   const setAuth = useAuthStore((s) => s.setAuth)
-  const navigate = useNavigate()
 
   return useMutation({
     mutationFn: (payload: LoginPayload) =>
       api.post<AuthResponse>('/api/auth/login', payload).then((r) => r.data),
     onSuccess: (data) => {
       setAuth(data.token, data.user)
-      navigate('/')
     },
   })
 }
 
 export function useRegister() {
   const setAuth = useAuthStore((s) => s.setAuth)
-  const navigate = useNavigate()
 
   return useMutation({
     mutationFn: (payload: RegisterPayload) =>
       api.post<AuthResponse>('/api/auth/register', payload).then((r) => r.data),
     onSuccess: (data) => {
       setAuth(data.token, data.user)
-      navigate('/')
     },
   })
 }

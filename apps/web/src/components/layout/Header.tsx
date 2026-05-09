@@ -62,14 +62,14 @@ export default function Header({ search, setSearch, view, setView, onQuickAdd }:
         {/* Notification */}
         <button className="w-9 h-9 rounded-lg bg-white border border-stone-200 hover:border-stone-300 flex items-center justify-center text-stone-600 transition relative">
           <Icon name="bell" size={15} />
-          <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full" style={{ background: '#3B82F6' }} />
+          <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full" style={{ background: '#2A53D9' }} />
         </button>
 
         {/* Quick add */}
         <button
           onClick={onQuickAdd}
           className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-white text-[13px] font-semibold shadow-sm transition hover:opacity-90"
-          style={{ background: '#3B82F6', boxShadow: '0 1px 2px rgba(59,130,246,0.35)' }}
+          style={{ background: '#2A53D9', boxShadow: '0 1px 2px rgba(42,83,217,0.35)' }}
         >
           <Icon name="plus" size={14} />
           Thêm đơn ứng tuyển
@@ -78,7 +78,7 @@ export default function Header({ search, setSearch, view, setView, onQuickAdd }:
         {/* Avatar */}
         <div
           className="w-9 h-9 rounded-full flex items-center justify-center font-semibold text-white text-[13px]"
-          style={{ background: 'linear-gradient(135deg,#3B82F6,#2563EB)' }}
+          style={{ background: 'linear-gradient(135deg,#2A53D9,#1A3DB0)' }}
         >
           MK
         </div>

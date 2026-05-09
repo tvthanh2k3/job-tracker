@@ -4,8 +4,8 @@ const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 const TODAY_IDX = 3
 const EVENT_DAYS = [10, 12, 14, 17, 18]
 
-function InterviewRow({ mono, color, bg, company, role, time, when }: {
-  mono: string; color: string; bg: string
+function InterviewRow({ color, bg, company, role, time, when }: {
+  color: string; bg: string
   company: string; role: string; time: string; when: string
 }) {
   const [dayLabel, dayNum] = when.split(' ')
@@ -85,9 +85,9 @@ export default function SlideTwo() {
         width: '56%', display: 'flex', flexDirection: 'column', gap: 8,
         transform: 'rotate(3deg)',
       }}>
-        <InterviewRow mono="F" color="#A259FF" bg="#F5EDFF" company="Figma"  role="Design Eng" time="Today, 2:00 PM"   when="MAR 14" />
-        <InterviewRow mono="N" color="#1A1A1A" bg="#F1F1EF" company="Notion" role="Full-stack" time="Tomorrow, 10:30"  when="MAR 15" />
-        <InterviewRow mono="S" color="#635BFF" bg="#EEEDFF" company="Stripe" role="Frontend"   time="Thu, 4:00 PM"    when="MAR 18" />
+        <InterviewRow color="#A259FF" bg="#F5EDFF" company="Figma"  role="Design Eng" time="Today, 2:00 PM"  when="MAR 14" />
+        <InterviewRow color="#1A1A1A" bg="#F1F1EF" company="Notion" role="Full-stack" time="Tomorrow, 10:30" when="MAR 15" />
+        <InterviewRow color="#635BFF" bg="#EEEDFF" company="Stripe" role="Frontend"   time="Thu, 4:00 PM"   when="MAR 18" />
       </div>
 
       {/* Reminder pill */}

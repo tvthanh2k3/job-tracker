@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import DashboardPage from '@/pages/DashboardPage'
+import LoginPage from '@/features/auth/components/LoginPage'
 
 const router = createBrowserRouter([
   {
@@ -8,7 +9,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/login',
-    element: <div>Login Page (coming soon)</div>,
+    element: <LoginPage />,
   },
   {
     path: '*',

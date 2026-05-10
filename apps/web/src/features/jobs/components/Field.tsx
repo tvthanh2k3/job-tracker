@@ -11,7 +11,7 @@ export default function Field({ label, required, children }: FieldProps) {
     <label className="block">
       <span className="text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5 inline-block">
         {label}
-        {required && <span className="ml-0.5" style={{ color: '#2A53D9' }}>*</span>}
+        {required && <span className="ml-0.5 text-primary">*</span>}
       </span>
       {children}
     </label>

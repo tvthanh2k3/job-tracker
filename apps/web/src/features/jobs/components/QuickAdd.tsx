@@ -125,8 +125,7 @@ export default function QuickAdd({ open, onClose, onCreate }: QuickAddProps) {
           <button
             onClick={submit}
             disabled={!company.trim() || !title.trim()}
-            className="px-4 py-1.5 rounded-md text-[13px] font-semibold text-white disabled:opacity-50"
-            style={{ background: '#2A53D9' }}
+            className="px-4 py-1.5 rounded-md text-[13px] font-semibold text-white disabled:opacity-50 bg-primary"
           >
             Thêm đơn ứng tuyển
           </button>

@@ -91,7 +91,7 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
             >
               {t.label}
               {tab === t.id && (
-                <span className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full" style={{ background: '#2A53D9' }} />
+                <span className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-primary" />
               )}
             </button>
           ))}
@@ -127,7 +127,7 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
                         >
                           Huỷ
                         </button>
-                        <button onClick={saveNote} className="px-3 py-1.5 rounded-md text-[12px] font-semibold text-white" style={{ background: '#2A53D9' }}>
+                        <button onClick={saveNote} className="px-3 py-1.5 rounded-md text-[12px] font-semibold text-white bg-primary">
                           Lưu
                         </button>
                       </div>
@@ -240,7 +240,7 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
           </select>
           <div className="flex items-center gap-2">
             <button className="px-3 py-1.5 rounded-md text-[12px] text-stone-600 hover:bg-stone-100">Lưu trữ</button>
-            <button onClick={onClose} className="px-4 py-1.5 rounded-md text-[12px] font-semibold text-white" style={{ background: '#2A53D9' }}>
+            <button onClick={onClose} className="px-4 py-1.5 rounded-md text-[12px] font-semibold text-white bg-primary">
               Xong
             </button>
           </div>

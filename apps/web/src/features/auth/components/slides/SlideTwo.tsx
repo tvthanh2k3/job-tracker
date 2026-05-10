@@ -1,5 +1,3 @@
-const BRAND = '#2A53D9'
-
 const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 const TODAY_IDX = 3
 const EVENT_DAYS = [10, 12, 14, 17, 18]
@@ -63,7 +61,7 @@ export default function SlideTwo() {
             return (
               <div key={i} style={{
                 aspectRatio: '1/1', borderRadius: 6,
-                background: isToday ? BRAND : 'transparent',
+                background: isToday ? 'var(--color-primary)' : 'transparent',
                 color: isToday ? '#fff' : '#1A2238',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 8.5, fontWeight: isToday ? 700 : 500,

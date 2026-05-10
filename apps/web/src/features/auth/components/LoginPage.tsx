@@ -34,7 +34,7 @@ export default function LoginPage() {
         <svg width="180" height="180" style={{ right: -30, bottom: '18%', opacity: 0.5 }}><ellipse cx="90" cy="90" rx="80" ry="50" transform="rotate(30 90 90)" fill="#C7D7F8" /></svg>
       </div>
 
-      <div className="auth-frame" ref={frameRef} style={{ '--auth-brand': '#2A53D9' } as React.CSSProperties}>
+      <div className="auth-frame" ref={frameRef}>
         <Carousel active={active} onSelect={setActive} />
         <AuthForm frameRef={frameRef} />
       </div>

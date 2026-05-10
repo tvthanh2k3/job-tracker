@@ -3,16 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import Icon from '@/components/Icon'
 import { useLogin, useRegister } from '../queries/useAuth'
 
-const BRAND = '#2A53D9'
-
 // ── Sub-components ─────────────────────────────────────────────────────────
 
 function TrackrLogo() {
   return (
     <div className="auth-logo">
       <div
-        className="w-8 h-8 rounded-lg flex items-center justify-center"
-        style={{ background: BRAND }}
+        className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary"
       >
         <Icon name="briefcase" size={16} className="text-white" />
       </div>

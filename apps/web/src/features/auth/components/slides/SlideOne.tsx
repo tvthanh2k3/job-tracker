@@ -1,5 +1,3 @@
-const BRAND = '#2A53D9'
-
 function CompanyLogo({ name, color, bg }: { name: string; color: string; bg: string }) {
   return (
     <div style={{
@@ -103,4 +101,3 @@ export default function SlideOne() {
   )
 }
 
-export { BRAND }

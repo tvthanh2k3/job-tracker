@@ -27,10 +27,6 @@ public class IntegrationTestBase : IAsyncLifetime
 					config.AddInMemoryCollection(new Dictionary<string, string?>
 					{
 						["ConnectionStrings:DefaultConnection"] = _dbContainer.GetConnectionString(),
-						["JwtSettings:Secret"] = "integration-test-secret-key-minimum-32-chars!!",
-						["JwtSettings:Issuer"] = "JobTracker.Api",
-						["JwtSettings:Audience"] = "JobTracker.Web",
-						["JwtSettings:ExpiryMinutes"] = "60",
 						["AllowedOrigins:0"] = "http://localhost:5173"
 					});
 				});

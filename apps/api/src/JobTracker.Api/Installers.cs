@@ -1,4 +1,5 @@
 using JobTracker.Application;
+using JobTracker.Api.Filters;
 using JobTracker.Infrastructure;
 using JobTracker.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,7 +22,10 @@ public static class Installers
 
     public static void InstallServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddControllers();
+        services.AddControllers(options =>
+        {
+            options.Filters.Add<ValidationFilter>();
+        });
 
         InstallOpenApi(services);
 

@@ -31,6 +31,7 @@ namespace JobTracker.UnitTests.Auth
 		[Fact]
 		public async Task RegisterAsync_DuplicateEmail_ThrowsConflictException()
 		{
+			// Arrange
 			var registerDto = new RegisterDto
 			{
 				FullName = "Test User",

@@ -5,5 +5,7 @@
     <Project Path="src/JobTracker.Domain/JobTracker.Domain.csproj" Id="18713026-e71e-4098-8feb-0a5acbe2ad6d" />
     <Project Path="src/JobTracker.Infrastructure/JobTracker.Infrastructure.csproj" Id="d822fd65-05ae-430b-a886-c2577b218c20" />
   </Folder>
-  <Folder Name="/tests/" />
+  <Folder Name="/tests/">
+    <Project Path="tests/JobTracker.UnitTests/JobTracker.UnitTests.csproj" Id="837804e0-1089-4b93-ba8e-27a458aec6b8" />
+  </Folder>
 </Solution>

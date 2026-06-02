@@ -6,6 +6,7 @@
     <Project Path="src/JobTracker.Infrastructure/JobTracker.Infrastructure.csproj" Id="d822fd65-05ae-430b-a886-c2577b218c20" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/JobTracker.IntegrationTests/JobTracker.IntegrationTests.csproj" Id="ccc4cb1c-5aa7-4762-bc27-edb5b55e3477" />
     <Project Path="tests/JobTracker.UnitTests/JobTracker.UnitTests.csproj" Id="837804e0-1089-4b93-ba8e-27a458aec6b8" />
   </Folder>
 </Solution>

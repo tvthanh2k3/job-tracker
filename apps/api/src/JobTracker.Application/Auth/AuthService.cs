@@ -44,9 +44,21 @@ public class AuthService : IAuthService
         };
 
         await _unitOfWork.Repository<User>().AddAsync(user);
+
+        var userRole = await _unitOfWork.Repository<Role>().GetFirstOrDefaultAsync(r => r.Name == "User");
+        if (userRole != null)
+        {
+            await _unitOfWork.Repository<UserRole>().AddAsync(new UserRole
+            {
+                UserId = user.Id,
+                RoleId = userRole.Id
+            });
+        }
+
         await _unitOfWork.SaveChangesAsync();
 
-        var token = _jwtTokenService.GenerateToken(user);
+        var userWithRoles = await _userRepository.GetUserWithRolesAsync(user.Id);
+        var token = _jwtTokenService.GenerateToken(userWithRoles!);
 
         return new AuthResponseDto
         {

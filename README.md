@@ -1,6 +1,29 @@
 # Job Tracker
 
-A web app to track job applications — log positions, manage pipeline status (Applied → Interview → Offer / Rejected), schedule interviews, and leverage AI to optimize resumes and generate cover letters.
+A web app to track job applications — log positions, manage pipeline status (Applied → Interview → Offer / Rejected), and schedule interviews.
+
+## Features
+
+### ✅ Implemented
+
+- **Authentication** — register, login, profile via JWT; token injected automatically on every request
+- **Role-based access control** — `SuperAdmin` and `User` roles
+- **Job application CRUD** — title, company, URL, description, salary range, remote status
+- **Job status tracking** — `Applied → Interview → Offer / Rejected`
+- **Interview management** — round, scheduled time, notes; linked to a job
+- **Kanban board** — drag-and-drop cards across status columns
+- **List & Table views** — switch between views on the jobs page
+
+### 🚧 Roadmap
+
+- **Analytics Dashboard** — KPI cards (total applications, interview rate, offer rate) + charts
+- **AI features** — resume optimization against a job description; auto-generated cover letters
+- **Pagination, filtering & sorting** for the jobs list
+- **Unit & Integration tests** — service layer + API endpoints
+- **CI/CD** — GitHub Actions pipeline (build, lint, test)
+- **Docker + Azure deployment** — containerized stack with a live demo URL
+
+---
 
 ## Tech Stack
 
@@ -57,7 +80,7 @@ apps/
 ├── api/src/
 │   ├── JobTracker.Domain/           # Entities, core exceptions
 │   ├── JobTracker.Application/      # Use cases, DTOs, services
-│   ├── JobTracker.Infrastructure/   # EF Core, repositories, OpenAI
+│   ├── JobTracker.Infrastructure/   # EF Core, repositories, JWT
 │   └── JobTracker.Api/              # Controllers, middleware
 └── web/src/
     ├── features/                    # Feature-based modules

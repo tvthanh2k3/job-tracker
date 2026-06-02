@@ -2,6 +2,7 @@ using AutoMapper;
 using JobTracker.Application.Auth.Dto;
 using JobTracker.Application.Users.Dto;
 using JobTracker.Domain.Entities;
+using JobTracker.Domain.Exceptions;
 using JobTracker.Domain.Interfaces;
 using BCrypt.Net;
 
@@ -30,7 +31,7 @@ public class AuthService : IAuthService
         var existingUser = await _unitOfWork.Repository<User>().GetFirstOrDefaultAsync(u => u.Email == registerDto.Email);
         if (existingUser != null)
         {
-            throw new Exception("Email is already taken.");
+            throw new ConflictException("Email is already taken.");
         }
 
         var user = new User

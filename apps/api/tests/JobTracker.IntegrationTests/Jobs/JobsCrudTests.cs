@@ -8,17 +8,6 @@ namespace JobTracker.IntegrationTests.Jobs;
 
 public class JobsCrudTests : IntegrationTestBase
 {
-	private async Task<string> LoginAsync(string email, string password = "password123")
-	{
-		var registerDto = new { FullName = "Test User", Email = email, Password = password };
-		await Client.PostAsJsonAsync("/api/auth/register", registerDto);
-
-		var loginDto = new { Email = email, Password = password };
-		var loginResponse = await Client.PostAsJsonAsync("/api/auth/login", loginDto);
-		var loginResult = await loginResponse.Content.ReadFromJsonAsync<JsonElement>();
-		return loginResult.GetProperty("token").GetString()!;
-	}
-
 	[Fact]
 	public async Task JobCrud_CreateListUpdateDelete_Success()
 	{

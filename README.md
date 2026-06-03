@@ -1,5 +1,7 @@
 # Job Tracker
 
+[![CI](https://github.com/tvthanh2k3/job-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/tvthanh2k3/job-tracker/actions/workflows/ci.yml)
+
 A web app to track job applications — log positions, manage pipeline status (Applied → Interview → Offer / Rejected), and schedule interviews.
 
 ## Features
@@ -13,14 +15,14 @@ A web app to track job applications — log positions, manage pipeline status (A
 - **Interview management** — round, scheduled time, notes; linked to a job
 - **Kanban board** — drag-and-drop cards across status columns
 - **List & Table views** — switch between views on the jobs page
+- **Unit & Integration tests** — service layer + API endpoints (xUnit, NSubstitute, Testcontainers)
+- **CI/CD** — GitHub Actions pipeline (build, lint, test) on every push and PR
 
 ### 🚧 Roadmap
 
 - **Analytics Dashboard** — KPI cards (total applications, interview rate, offer rate) + charts
 - **AI features** — resume optimization against a job description; auto-generated cover letters
 - **Pagination, filtering & sorting** for the jobs list
-- **Unit & Integration tests** — service layer + API endpoints
-- **CI/CD** — GitHub Actions pipeline (build, lint, test)
 - **Docker + Azure deployment** — containerized stack with a live demo URL
 
 ---

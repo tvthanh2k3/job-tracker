@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Carousel from './Carousel'
 import AuthForm from './AuthForm'
-import { SLIDES } from './slides'
+import { SLIDES } from './slides/data'
 
 const AUTOPLAY_INTERVAL = 4000
 

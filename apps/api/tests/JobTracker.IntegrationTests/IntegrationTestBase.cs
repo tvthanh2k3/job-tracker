@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Testcontainers.PostgreSql;
@@ -30,20 +29,12 @@ public class IntegrationTestBase : IAsyncLifetime
 
 	public async Task InitializeAsync()
 	{
-		await _dbContainer.StartAsync();  // spin up Postgres container
+		await _dbContainer.StartAsync();
 
-		_factory = new WebApplicationFactory<Program>()
-			.WithWebHostBuilder(builder =>
-			{
-				builder.ConfigureAppConfiguration((context, config) =>
-				{
-					config.AddInMemoryCollection(new Dictionary<string, string?>
-					{
-						["ConnectionStrings:DefaultConnection"] = _dbContainer.GetConnectionString(),
-						["AllowedOrigins:0"] = "http://localhost:5173"
-					});
-				});
-			});
+		// WithWebHostBuilder.ConfigureAppConfiguration fires too late in the minimal hosting model.
+		Environment.SetEnvironmentVariable("ConnectionStrings__DefaultConnection", _dbContainer.GetConnectionString());
+
+		_factory = new WebApplicationFactory<Program>();
 
 		Client = _factory.CreateClient(new WebApplicationFactoryClientOptions
 		{
@@ -55,5 +46,6 @@ public class IntegrationTestBase : IAsyncLifetime
 	{
 		await _factory.DisposeAsync();
 		await _dbContainer.StopAsync();
+		Environment.SetEnvironmentVariable("ConnectionStrings__DefaultConnection", null);
 	}
 }

@@ -6,6 +6,7 @@ using System.Text.Json;
 
 namespace JobTracker.IntegrationTests.Jobs;
 
+[Collection("Integration")]
 public class JobsAuthorizationTests : IntegrationTestBase
 {
 	[Fact]

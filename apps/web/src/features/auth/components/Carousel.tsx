@@ -1,4 +1,5 @@
-import { SLIDES, Squiggle } from './slides'
+import { SLIDES } from './slides/data'
+import { Squiggle } from './slides'
 
 const SPRINKLES = [
   { color: '#F4A361', style: { left: '14%',  top: '12%' } },

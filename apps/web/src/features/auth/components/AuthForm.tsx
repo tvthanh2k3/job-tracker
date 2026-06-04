@@ -130,26 +130,20 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
   const [remember, setRemember] = useState(false)
   const [agree,    setAgree]    = useState(false)
   const [formErr,  setFormErr]  = useState('')
-  const [phase,    setPhase]    = useState<Phase>('idle')
   const [origin,   setOrigin]   = useState({ cx: '50%', cy: '50%' })
 
   const btnRef = useRef<HTMLButtonElement>(null)
   const mutation = mode === 'login' ? loginMutation : registerMutation
+  const phase: Phase = mutation.isPending ? 'processing' : mutation.isSuccess ? 'confirmed' : 'idle'
 
   const isSignup = mode === 'signup'
 
-  // Drive phase from mutation state
   useEffect(() => {
-    if (mutation.isPending) {
-      setPhase('processing')
-    } else if (mutation.isSuccess) {
-      setPhase('confirmed')
+    if (mutation.isSuccess) {
       const timer = setTimeout(() => navigate('/'), 1600)
       return () => clearTimeout(timer)
-    } else if (mutation.isError) {
-      setPhase('idle')
     }
-  }, [mutation.isPending, mutation.isSuccess, mutation.isError, navigate])
+  }, [mutation.isSuccess, navigate])
 
   const switchTo = (next: Mode) => {
     setMode(next)

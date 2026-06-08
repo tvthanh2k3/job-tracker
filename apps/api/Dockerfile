@@ -1,4 +1,3 @@
-# Build stage
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
@@ -15,11 +14,9 @@ RUN dotnet publish src/JobTracker.Api/JobTracker.Api.csproj \
     -o /app/publish \
     --no-restore
 
-# Runtime stage — smaller image, no SDK
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
-# Non-root user for security
 RUN adduser --disabled-password --gecos "" appuser && chown -R appuser /app
 USER appuser
 

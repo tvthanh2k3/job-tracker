@@ -22,9 +22,7 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Publish
-        run: dotnet publish src/JobTracker.Api/JobTracker.Api.csproj \
-          -c Release \
-          -o ./publish
+        run: dotnet publish src/JobTracker.Api/JobTracker.Api.csproj -c Release -o ./publish
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3

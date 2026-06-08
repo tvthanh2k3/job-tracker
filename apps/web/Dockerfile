@@ -7,6 +7,11 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
+
+# VITE_API_BASE_URL is baked into the bundle at build time, not runtime
+ARG VITE_API_BASE_URL=http://localhost:5000
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
 RUN npm run build
 
 # Runtime stage — serve static files via nginx

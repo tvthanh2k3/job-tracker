@@ -27,11 +27,13 @@ if (app.Environment.IsDevelopment())
             auth.Token = "";
         });
     });
+
+    // HTTPS redirection only in Development — in production, TLS is terminated
+    // at the infrastructure level (Azure App Service, nginx reverse proxy)
+    app.UseHttpsRedirection();
 }
 
 app.UseExceptionHandler();
-
-app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
 

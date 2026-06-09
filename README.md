@@ -4,6 +4,8 @@
 
 A web app to track job applications — log positions, manage pipeline status (Applied → Interview → Offer / Rejected), and schedule interviews.
 
+**[Live Demo](https://salmon-water-0fed1e00f.7.azurestaticapps.net)**
+
 ## Features
 
 ### ✅ Implemented
@@ -16,14 +18,15 @@ A web app to track job applications — log positions, manage pipeline status (A
 - **Kanban board** — drag-and-drop cards across status columns
 - **List & Table views** — switch between views on the jobs page
 - **Unit & Integration tests** — service layer + API endpoints (xUnit, NSubstitute, Testcontainers)
-- **CI/CD** — GitHub Actions pipeline (build, lint, test) on every push and PR
+- **CI/CD** — GitHub Actions pipeline (build, lint, test on every push and PR; auto-deploy to Azure on merge to `main`)
+- **Docker** — multi-stage Dockerfile; full stack runnable locally via `docker compose up`
+- **Azure deployment** — API on App Service, PostgreSQL on Flexible Server, frontend on Static Web Apps
 
 ### 🚧 Roadmap
 
 - **Analytics Dashboard** — KPI cards (total applications, interview rate, offer rate) + charts
 - **AI features** — resume optimization against a job description; auto-generated cover letters
 - **Pagination, filtering & sorting** for the jobs list
-- **Docker + Azure deployment** — containerized stack with a live demo URL
 
 ---
 
@@ -57,7 +60,7 @@ dotnet ef database update --project src/JobTracker.Infrastructure --startup-proj
 dotnet run --project src/JobTracker.Api/JobTracker.Api.csproj
 ```
 
-API: `https://localhost:5001` · Swagger: `https://localhost:5001/swagger`
+API: `https://localhost:5001` · Scalar docs: `https://localhost:5001/scalar/v1`
 
 ### Frontend
 

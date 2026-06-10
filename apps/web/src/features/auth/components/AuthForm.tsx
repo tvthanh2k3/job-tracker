@@ -112,6 +112,20 @@ const IconUser = () => (
   </svg>
 )
 
+// ── Error mapping ───────────────────────────────────────────────────────────
+
+function resolveApiError(error: unknown, isSignup: boolean): string {
+  const status = (error as { response?: { status?: number } }).response?.status
+  if (isSignup) {
+    if (status === 409) return 'Email này đã được sử dụng'
+    if (status === 400) return 'Thông tin đăng ký không hợp lệ'
+  } else {
+    if (status === 400) return 'Email hoặc mật khẩu không hợp lệ'
+    if (status === 401) return 'Email hoặc mật khẩu không đúng'
+  }
+  return 'Có lỗi xảy ra, vui lòng thử lại'
+}
+
 // ── Main component ──────────────────────────────────────────────────────────
 
 type Mode = 'login' | 'signup'
@@ -191,7 +205,7 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
     setOrigin({ cx: `${cx}%`, cy: `${cy}%` })
   }
 
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+  const submit = (e: { preventDefault(): void }) => {
     e.preventDefault()
     if (phase !== 'idle') return
     setFormErr('')
@@ -215,10 +229,8 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
     requestAnimationFrame(() => setPhase('processing'))
   }
 
-  // Only show API error after the overlay has dismissed (phase === 'idle')
   const apiError = phase === 'idle' && mutation.isError
-    ? ((mutation.error as { response?: { data?: { message?: string } } })
-        .response?.data?.message ?? 'Có lỗi xảy ra, vui lòng thử lại')
+    ? resolveApiError(mutation.error, isSignup)
     : ''
 
   const overlay = (

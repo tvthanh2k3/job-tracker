@@ -22,11 +22,5 @@ public class CreateJobDtoValidator : AbstractValidator<CreateJobDto>
             .Must(uri => string.IsNullOrEmpty(uri) || Uri.TryCreate(uri, UriKind.Absolute, out _))
             .WithMessage("Invalid URL format.");
 
-        RuleFor(x => x.SalaryMin)
-            .GreaterThanOrEqualTo(0).WithMessage("Minimum salary must be greater than or equal to 0.");
-
-        RuleFor(x => x.SalaryMax)
-            .GreaterThanOrEqualTo(x => x.SalaryMin ?? 0)
-            .WithMessage("Maximum salary must be greater than or equal to minimum salary.");
     }
 }

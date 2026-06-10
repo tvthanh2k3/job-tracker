@@ -36,19 +36,4 @@ public class CreateJobDtoValidatorTests
 		result.IsValid.Should().BeFalse();
 	}
 
-	[Fact]
-	public void Validate_SalaryMinGreaterThanMax_ReturnsInvalid()
-	{
-		var dto = new CreateJobDto
-		{
-			Title = "Software Engineer",
-			Company = "Google",
-			SalaryMin = 1000,
-			SalaryMax = 500
-		};
-
-		var result = _validator.Validate(dto);
-
-		result.IsValid.Should().BeFalse();
-	}
 }

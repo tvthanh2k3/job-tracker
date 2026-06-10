@@ -1,7 +1,10 @@
-import { useState, useRef, useEffect, type FormEvent } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import Icon from '@/components/Icon'
 import { useLogin, useRegister } from '../queries/useAuth'
+
+const MIN_SPINNER_MS = 2000
 
 // ── Sub-components ─────────────────────────────────────────────────────────
 
@@ -132,23 +135,43 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
   const [formErr,  setFormErr]  = useState('')
   const [origin,   setOrigin]   = useState({ cx: '50%', cy: '50%' })
 
+  const [phase,      setPhase]      = useState<Phase>('idle')
+  const [delayReady, setDelayReady] = useState(false)
+  const delayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const btnRef = useRef<HTMLButtonElement>(null)
   const mutation = mode === 'login' ? loginMutation : registerMutation
-  const phase: Phase = mutation.isPending ? 'processing' : mutation.isSuccess ? 'confirmed' : 'idle'
 
   const isSignup = mode === 'signup'
 
+  // Settle only after both the 2s delay AND the API call have finished
   useEffect(() => {
+    if (phase !== 'processing' || !delayReady || mutation.isPending) return
     if (mutation.isSuccess) {
-      const timer = setTimeout(() => navigate('/'), 1600)
-      return () => clearTimeout(timer)
+      setPhase('confirmed')
+    } else if (mutation.isError) {
+      setPhase('idle')
     }
-  }, [mutation.isSuccess, navigate])
+  }, [phase, delayReady, mutation.isPending, mutation.isSuccess, mutation.isError])
+
+  useEffect(() => {
+    if (phase !== 'confirmed') return
+    const timer = setTimeout(() => navigate('/'), 1600)
+    return () => clearTimeout(timer)
+  }, [phase, navigate])
+
+  useEffect(() => {
+    return () => { if (delayTimerRef.current) clearTimeout(delayTimerRef.current) }
+  }, [])
 
   const switchTo = (next: Mode) => {
     setMode(next)
     setFormErr('')
-    mutation.reset()
+    setPhase('idle')
+    setDelayReady(false)
+    if (delayTimerRef.current) clearTimeout(delayTimerRef.current)
+    loginMutation.reset()
+    registerMutation.reset()
   }
 
   const computeOrigin = () => {
@@ -162,7 +185,7 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
     setOrigin({ cx: `${cx}%`, cy: `${cy}%` })
   }
 
-  const submit = (e: FormEvent) => {
+  const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (phase !== 'idle') return
     setFormErr('')
@@ -173,18 +196,56 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
     }
 
     computeOrigin()
+    setDelayReady(false)
+    if (delayTimerRef.current) clearTimeout(delayTimerRef.current)
+    delayTimerRef.current = setTimeout(() => setDelayReady(true), MIN_SPINNER_MS)
 
     if (isSignup) {
       registerMutation.mutate({ name, email, password: pw })
     } else {
       loginMutation.mutate({ email, password: pw })
     }
+
+    requestAnimationFrame(() => setPhase('processing'))
   }
 
-  const apiError = mutation.error
+  // Only show API error after the overlay has dismissed (phase === 'idle')
+  const apiError = phase === 'idle' && mutation.isError
     ? ((mutation.error as { response?: { data?: { message?: string } } })
         .response?.data?.message ?? 'Có lỗi xảy ra, vui lòng thử lại')
     : ''
+
+  const overlay = (
+    <div
+      className={`auth-reveal ${phase !== 'idle' ? 'is-on' : ''}`}
+      style={{ '--cx': origin.cx, '--cy': origin.cy } as React.CSSProperties}
+    >
+      {phase === 'processing' && (
+        <div className="auth-reveal-content">
+          <div className="auth-spinner" />
+          <h3>Đang xử lý…</h3>
+        </div>
+      )}
+      {phase === 'confirmed' && (
+        <div className="auth-reveal-content" style={{ position: 'relative' }}>
+          <div className="auth-confirm-card">
+            <svg width="48" height="48" viewBox="0 0 40 40" fill="none">
+              <polyline
+                points="9 21 17 29 32 12"
+                stroke="#5DC983"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="auth-check-draw"
+              />
+            </svg>
+          </div>
+          <h3>Thành công!</h3>
+          <ConfettiBurst />
+        </div>
+      )}
+    </div>
+  )
 
   return (
     <div className={`auth-panel-right ${isSignup ? 'is-signup' : ''}`}>
@@ -262,36 +323,8 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
         )}
       </div>
 
-      {/* Reveal overlay */}
-      <div
-        className={`auth-reveal ${phase !== 'idle' ? 'is-on' : ''}`}
-        style={{ '--cx': origin.cx, '--cy': origin.cy } as React.CSSProperties}
-      >
-        {phase === 'processing' && (
-          <div className="auth-reveal-content">
-            <div className="auth-spinner" />
-            <h3>Đang xử lý…</h3>
-          </div>
-        )}
-        {phase === 'confirmed' && (
-          <div className="auth-reveal-content" style={{ position: 'relative' }}>
-            <div className="auth-confirm-card">
-              <svg width="48" height="48" viewBox="0 0 40 40" fill="none">
-                <polyline
-                  points="9 21 17 29 32 12"
-                  stroke="#5DC983"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="auth-check-draw"
-                />
-              </svg>
-            </div>
-            <h3>Thành công!</h3>
-            <ConfettiBurst />
-          </div>
-        )}
-      </div>
+      {/* Overlay portaled into auth-frame so it covers both panels */}
+      {frameRef.current && createPortal(overlay, frameRef.current)}
     </div>
   )
 }

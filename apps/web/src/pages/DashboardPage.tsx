@@ -47,8 +47,11 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center text-stone-400 text-sm">
-        Đang tải...
+      <div className="h-screen w-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 rounded-full border-2 border-stone-200 border-t-stone-600 animate-spin" />
+          <span className="text-stone-400 text-sm">Đang tải...</span>
+        </div>
       </div>
     );
   }

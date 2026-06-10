@@ -22,7 +22,7 @@ function TrackrLogo() {
 }
 
 function Field({
-  id, label, type = 'text', value, onChange, icon,
+  id, label, type = 'text', value, onChange, icon, onIconClick,
 }: {
   id: string
   label: string
@@ -30,6 +30,7 @@ function Field({
   value: string
   onChange: (v: string) => void
   icon: React.ReactNode
+  onIconClick?: () => void
 }) {
   const [focus, setFocus] = useState(false)
   return (
@@ -47,7 +48,13 @@ function Field({
         onBlur={() => setFocus(false)}
         onChange={(e) => onChange(e.target.value)}
       />
-      <span className="auth-field-icon">{icon}</span>
+      <span
+        className="auth-field-icon"
+        style={onIconClick ? { cursor: 'pointer' } : undefined}
+        onClick={onIconClick}
+      >
+        {icon}
+      </span>
     </label>
   )
 }
@@ -93,16 +100,17 @@ const IconEmail = () => (
   </svg>
 )
 
-const IconLock = () => (
+
+const IconEye = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V8a4 4 0 018 0v3" />
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
   </svg>
 )
 
-const IconLockCheck = () => (
+const IconEyeOff = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V8a4 4 0 018 0v3" />
-    <path d="M9 16l2 2 4-4" />
+    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
+    <line x1="1" y1="1" x2="23" y2="23"/>
   </svg>
 )
 
@@ -150,6 +158,8 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
   const [agree,    setAgree]    = useState(false)
   const [formErr,  setFormErr]  = useState('')
   const [origin,   setOrigin]   = useState({ cx: '50%', cy: '50%' })
+  const [showPw,   setShowPw]   = useState(false)
+  const [showPw2,  setShowPw2]  = useState(false)
 
   const [phase,      setPhase]      = useState<Phase>('idle')
   const [delayReady, setDelayReady] = useState(false)
@@ -189,6 +199,8 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
     setFormErr('')
     setPhase('idle')
     setDelayReady(false)
+    setShowPw(false)
+    setShowPw2(false)
     if (delayTimerRef.current) clearTimeout(delayTimerRef.current)
     loginMutation.reset()
     registerMutation.reset()
@@ -283,9 +295,21 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
           <Field id="name" label="Họ và tên" value={name} onChange={setName} icon={<IconUser />} />
         )}
         <Field id="email"    label="Email"    type="email"    value={email} onChange={setEmail} icon={<IconEmail />} />
-        <Field id="password" label="Mật khẩu" type="password" value={pw}    onChange={setPw}    icon={<IconLock />} />
+        <Field
+          id="password" label="Mật khẩu"
+          type={showPw ? 'text' : 'password'}
+          value={pw} onChange={setPw}
+          icon={showPw ? <IconEyeOff /> : <IconEye />}
+          onIconClick={() => setShowPw(v => !v)}
+        />
         {isSignup && (
-          <Field id="password2" label="Xác nhận mật khẩu" type="password" value={pw2} onChange={setPw2} icon={<IconLockCheck />} />
+          <Field
+            id="password2" label="Xác nhận mật khẩu"
+            type={showPw2 ? 'text' : 'password'}
+            value={pw2} onChange={setPw2}
+            icon={showPw2 ? <IconEyeOff /> : <IconEye />}
+            onIconClick={() => setShowPw2(v => !v)}
+          />
         )}
 
         {!isSignup && (

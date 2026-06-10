@@ -186,7 +186,6 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
                         <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md" style={{ background: s.bg, color: s.color }}>{s.label}</span>
                       </div>
                       <div className="text-[12px] text-stone-500 mb-2">
-                        {iv.with && <span className="inline-flex items-center gap-1 mr-3"><Icon name="user" size={11} />{iv.with}</span>}
                         {iv.date && <span className="inline-flex items-center gap-1"><Icon name="cal" size={11} />{fmtDate(iv.date)}</span>}
                       </div>
                       {iv.notes && <p className="text-[13px] text-stone-700 leading-relaxed">{iv.notes}</p>}
@@ -206,7 +205,7 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
                 { d: new Date().toISOString().slice(0, 10), t: 'Bạn đã mở đơn ứng tuyển này' },
                 ...job.interviews.map((iv) => ({
                   d: iv.date,
-                  t: `${iv.round}${iv.with ? ` với ${iv.with}` : ''} — ${{ passed: 'đã qua', failed: 'không qua', upcoming: 'sắp diễn ra' }[iv.status]}`,
+                  t: `${iv.round} — ${{ passed: 'đã qua', failed: 'không qua', upcoming: 'sắp diễn ra' }[iv.status]}`,
                 })),
                 job.appliedAt ? { d: job.appliedAt, t: `Đã ứng tuyển qua ${job.source ?? 'không rõ'}` } : null,
               ]

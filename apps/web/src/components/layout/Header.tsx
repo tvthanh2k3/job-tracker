@@ -1,21 +1,56 @@
-import type { ViewMode } from '@/types/view';
-import Icon from '@/components/Icon';
+import { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import type { ViewMode } from '@/types/view'
+import Icon from '@/components/Icon'
+import { useAuthStore } from '@/stores/authStore'
 
 interface HeaderProps {
-  search: string;
-  setSearch: (value: string) => void;
-  view: ViewMode;
-  setView: (view: ViewMode) => void;
-  onQuickAdd: () => void;
+  search: string
+  setSearch: (value: string) => void
+  view: ViewMode
+  setView: (view: ViewMode) => void
+  onQuickAdd: () => void
 }
 
 const VIEW_OPTIONS: { id: ViewMode; icon: Parameters<typeof Icon>[0]['name']; label: string }[] = [
   { id: 'kanban', icon: 'grid',  label: 'Bảng' },
   { id: 'table',  icon: 'table', label: 'Bảng dữ liệu' },
   { id: 'list',   icon: 'list',  label: 'Danh sách' },
-];
+]
+
+function AvatarImg({ avatarUrl, size = 'md' }: { avatarUrl?: string | null; size?: 'sm' | 'md' }) {
+  const dim = size === 'sm' ? 'w-8 h-8' : 'w-9 h-9'
+  return (
+    <img
+      src={avatarUrl ?? '/avatar-default.svg'}
+      alt="avatar"
+      className={`${dim} rounded-full object-cover flex-shrink-0`}
+    />
+  )
+}
 
 export default function Header({ search, setSearch, view, setView, onQuickAdd }: HeaderProps) {
+  const navigate    = useNavigate()
+  const { user, clearAuth } = useAuthStore()
+  const [open, setOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [open])
+
+  const handleLogout = () => {
+    clearAuth()
+    navigate('/login')
+  }
+
   return (
     <header className="px-7 py-4 border-b border-stone-200/70 bg-white flex items-center gap-4">
       <div>
@@ -75,14 +110,61 @@ export default function Header({ search, setSearch, view, setView, onQuickAdd }:
           Thêm đơn ứng tuyển
         </button>
 
-        {/* Avatar */}
-        <div
-          className="w-9 h-9 rounded-full flex items-center justify-center font-semibold text-white text-[13px]"
-          style={{ background: 'linear-gradient(135deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 65%, black))' }}
-        >
-          MK
+        {/* Avatar + Dropdown */}
+        <div className="relative" ref={menuRef}>
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="w-9 h-9 rounded-full overflow-hidden border border-stone-300 hover:border-stone-400 flex items-center justify-center flex-shrink-0 transition"
+          >
+            <img
+              src={user?.avatarUrl ?? '/avatar-default.svg'}
+              alt="avatar"
+              className="w-full h-full object-cover"
+            />
+          </button>
+
+          {open && (
+            <div className="absolute top-full right-0 mt-2 w-[224px] bg-white border border-stone-200/80 rounded-xl shadow-xl shadow-stone-900/10 py-1.5 z-50">
+              {/* User info header */}
+              <div className="px-3.5 py-3 flex items-center gap-3 border-b border-stone-100">
+                <AvatarImg avatarUrl={user?.avatarUrl} size="sm" />
+                <div className="min-w-0">
+                  <div className="text-[13px] font-semibold text-stone-900 truncate leading-tight">
+                    {user?.fullName ?? '—'}
+                  </div>
+                  <div className="text-[11px] text-stone-500 truncate mt-0.5">
+                    {user?.email ?? '—'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Menu items */}
+              <div className="px-1.5 pt-1.5 pb-1">
+                <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-stone-700 hover:bg-stone-100 transition text-left">
+                  <Icon name="user" size={14} className="text-stone-400 flex-shrink-0" />
+                  Hồ sơ cá nhân
+                </button>
+                <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-stone-700 hover:bg-stone-100 transition text-left">
+                  <Icon name="settings" size={14} className="text-stone-400 flex-shrink-0" />
+                  Cài đặt
+                </button>
+              </div>
+
+              <div className="h-px bg-stone-100 mx-2" />
+
+              <div className="px-1.5 pt-1 pb-1.5">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-red-600 hover:bg-red-50 transition text-left"
+                >
+                  <Icon name="logout" size={14} className="text-red-400 flex-shrink-0" />
+                  Đăng xuất
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>
-  );
+  )
 }

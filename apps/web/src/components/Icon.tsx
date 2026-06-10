@@ -2,7 +2,7 @@ type IconName =
   | 'search' | 'plus' | 'bell' | 'settings' | 'map' | 'cal' | 'cash'
   | 'link' | 'note' | 'chevR' | 'chevL' | 'chevD' | 'x' | 'grid' | 'list'
   | 'table' | 'filter' | 'dot3' | 'briefcase' | 'trend' | 'user' | 'check'
-  | 'clock' | 'archive' | 'home' | 'flag' | 'star' | 'inbox' | 'chart';
+  | 'clock' | 'archive' | 'home' | 'flag' | 'star' | 'inbox' | 'chart' | 'logout';
 
 interface IconProps {
   name: IconName;
@@ -40,6 +40,7 @@ const paths: Record<IconName, React.ReactNode> = {
   star:      <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/>,
   inbox:     <><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5h13L22 12v6a2 2 0 01-2 2H4a2 2 0 01-2-2v-6z"/></>,
   chart:     <><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></>,
+  logout:    <><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></>,
 };
 
 export default function Icon({ name, size = 16, className = '' }: IconProps) {

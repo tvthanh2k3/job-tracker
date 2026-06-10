@@ -79,7 +79,7 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <JobDetailModal key={openJobId ?? ''} job={openJob} onClose={() => setOpenJobId(null)} onUpdate={() => {}} />
+      <JobDetailModal key={openJobId ?? ''} job={openJob} onClose={() => setOpenJobId(null)} />
       <QuickAdd open={quickOpen} onClose={() => setQuickOpen(false)} />
     </div>
   );

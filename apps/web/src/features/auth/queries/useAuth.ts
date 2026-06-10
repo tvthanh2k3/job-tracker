@@ -1,15 +1,14 @@
 import { useMutation } from '@tanstack/react-query'
 import api from '@/lib/axios'
-import { useAuthStore } from '@/stores/authStore'
 
-interface AuthUser {
+export interface AuthUser {
   id: string
   name: string
   email: string
   role: string
 }
 
-interface AuthResponse {
+export interface AuthResponse {
   token: string
   user: AuthUser
 }
@@ -26,25 +25,15 @@ export interface RegisterPayload {
 }
 
 export function useLogin() {
-  const setAuth = useAuthStore((s) => s.setAuth)
-
   return useMutation({
     mutationFn: (payload: LoginPayload) =>
       api.post<AuthResponse>('/api/auth/login', payload).then((r) => r.data),
-    onSuccess: (data) => {
-      setAuth(data.token, data.user)
-    },
   })
 }
 
 export function useRegister() {
-  const setAuth = useAuthStore((s) => s.setAuth)
-
   return useMutation({
     mutationFn: (payload: RegisterPayload) =>
       api.post<AuthResponse>('/api/auth/register', payload).then((r) => r.data),
-    onSuccess: (data) => {
-      setAuth(data.token, data.user)
-    },
   })
 }

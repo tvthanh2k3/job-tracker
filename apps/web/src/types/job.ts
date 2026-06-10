@@ -6,13 +6,10 @@ export type StageId =
   | 'rejected'
   | 'ghosted';
 
-export type Priority = 'dream' | 'urgent';
-
 export type InterviewStatus = 'passed' | 'failed' | 'upcoming';
 
 export interface Interview {
   round: string;
-  with: string;
   date: string;
   status: InterviewStatus;
   notes?: string;
@@ -27,7 +24,6 @@ export interface Job {
   appliedAt?: string;
   stage: StageId;
   source?: string;
-  priority?: Priority;
   jdLink?: string;
   note?: string;
   interviews: Interview[];

@@ -34,15 +34,16 @@ public class JobService : IJobService
 
     public async Task<JobDto?> GetJobByIdAsync(Guid id, Guid userId)
     {
-        var job = await _unitOfWork.Repository<Job>()
+        var job = await _unitOfWork.Repository<Job>().GetByIdAsync(id);
+        if (job == null || job.UserId != userId) return null;
+
+        var jobWithInterviews = await _unitOfWork.Repository<Job>()
             .GetQueryable()
             .Include(j => j.Interviews)
             .AsNoTracking()
             .FirstOrDefaultAsync(j => j.Id == id);
 
-        if (job == null || job.UserId != userId) return null;
-
-        return _mapper.Map<JobDto>(job);
+        return _mapper.Map<JobDto>(jobWithInterviews);
     }
 
     public async Task<JobDto> CreateJobAsync(CreateJobDto createJobDto, Guid userId)

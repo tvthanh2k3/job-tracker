@@ -1,3 +1,4 @@
+using JobTracker.Application.Interviews.Dto;
 using JobTracker.Domain.Enums;
 
 namespace JobTracker.Application.Jobs.Dto;
@@ -9,10 +10,12 @@ public class JobDto
 	public string Company { get; set; } = string.Empty;
 	public string? Url { get; set; }
 	public string? Description { get; set; }
-	public decimal? SalaryMin { get; set; }
-	public decimal? SalaryMax { get; set; }
+	public string? Salary { get; set; }
+	public string? Location { get; set; }
+	public string? Note { get; set; }
+	public string? Source { get; set; }
 	public JobStatus Status { get; set; }
-	public RemoteStatus RemoteStatus { get; set; }
 	public DateTime CreatedAt { get; set; }
 	public DateTime? UpdatedAt { get; set; }
+	public List<InterviewDto> Interviews { get; set; } = [];
 }

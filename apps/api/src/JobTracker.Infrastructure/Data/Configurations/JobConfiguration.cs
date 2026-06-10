@@ -24,15 +24,14 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
             .HasConversion<string>()
             .HasMaxLength(50);
 
-        builder.Property(j => j.RemoteStatus)
-            .HasConversion<string>()
-            .HasMaxLength(50);
+        builder.Property(j => j.Salary)
+            .HasMaxLength(100);
 
-        builder.Property(j => j.SalaryMin)
-            .HasPrecision(18, 2);
+        builder.Property(j => j.Location)
+            .HasMaxLength(200);
 
-        builder.Property(j => j.SalaryMax)
-            .HasPrecision(18, 2);
+        builder.Property(j => j.Source)
+            .HasMaxLength(200);
 
         builder.HasIndex(j => j.UserId);
         builder.HasIndex(j => new { j.UserId, j.Status });

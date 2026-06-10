@@ -16,6 +16,10 @@ public class InterviewConfiguration : IEntityTypeConfiguration<Interview>
             .IsRequired()
             .HasMaxLength(150);
 
+        builder.Property(i => i.Status)
+            .HasConversion<string>()
+            .HasMaxLength(50);
+
         builder.HasIndex(i => i.JobId);
     }
 }

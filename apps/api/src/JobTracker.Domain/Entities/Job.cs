@@ -10,10 +10,11 @@ public class Job : BaseEntity
     public string Company { get; set; } = string.Empty;
     public string? Url { get; set; }
     public string? Description { get; set; }
-    public decimal? SalaryMin { get; set; }
-    public decimal? SalaryMax { get; set; }
+    public string? Salary { get; set; }
+    public string? Location { get; set; }
+    public string? Note { get; set; }
+    public string? Source { get; set; }
     public JobStatus Status { get; set; } = JobStatus.Applied;
-    public RemoteStatus RemoteStatus { get; set; } = RemoteStatus.Onsite;
 
     // Navigation properties
     public User? User { get; set; }

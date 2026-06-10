@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import Icon from '@/components/Icon'
 import { useLogin, useRegister } from '../queries/useAuth'
+import { useAuthStore } from '@/stores/authStore'
 
 const MIN_SPINNER_MS = 2000
 
@@ -122,6 +123,7 @@ interface AuthFormProps {
 
 export default function AuthForm({ frameRef }: AuthFormProps) {
   const navigate = useNavigate()
+  const setAuth  = useAuthStore((s) => s.setAuth)
   const loginMutation    = useLogin()
   const registerMutation = useRegister()
 
@@ -156,9 +158,13 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
 
   useEffect(() => {
     if (phase !== 'confirmed') return
-    const timer = setTimeout(() => navigate('/'), 1600)
+    const data = mutation.data
+    const timer = setTimeout(() => {
+      if (data) setAuth(data.token, data.user)
+      navigate('/')
+    }, 1600)
     return () => clearTimeout(timer)
-  }, [phase, navigate])
+  }, [phase, navigate, setAuth, mutation.data])
 
   useEffect(() => {
     return () => { if (delayTimerRef.current) clearTimeout(delayTimerRef.current) }

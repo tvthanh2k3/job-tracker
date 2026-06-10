@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
-import type { Job } from '@/types/job';
 import type { ViewMode } from '@/types/view';
-import { SAMPLE_JOBS } from '@/features/jobs/data/mockJobs';
+import { useJobs } from '@/features/jobs/queries/useJobs';
 import Sidebar from '@/components/layout/Sidebar';
 import Header from '@/components/layout/Header';
 import JobDetailModal from '@/features/jobs/components/JobDetailModal';
@@ -11,7 +10,7 @@ import ListView from '@/features/jobs/components/ListView';
 import Board from '@/features/board/components/Board';
 
 export default function DashboardPage() {
-  const [jobs,         setJobs]         = useState<Job[]>(SAMPLE_JOBS);
+  const { data: jobs = [], isLoading } = useJobs();
   const [search,       setSearch]       = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [view,         setView]         = useState<ViewMode>('kanban');
@@ -46,8 +45,13 @@ export default function DashboardPage() {
     return list;
   }, [jobs, activeFilter, search]);
 
-  const updateJob = (next: Job) => setJobs((prev) => prev.map((j) => (j.id === next.id ? next : j)));
-  const createJob = (job: Job)  => setJobs((prev) => [job, ...prev]);
+  if (isLoading) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center text-stone-400 text-sm">
+        Đang tải...
+      </div>
+    );
+  }
 
   return (
     <div
@@ -65,7 +69,7 @@ export default function DashboardPage() {
           onQuickAdd={() => setQuickOpen(true)}
         />
         {view === 'kanban' && (
-          <Board jobs={filtered} setJobs={setJobs} onCardClick={(j) => setOpenJobId(j.id)} />
+          <Board jobs={filtered} onCardClick={(j) => setOpenJobId(j.id)} />
         )}
         {view === 'table' && (
           <TableView jobs={filtered} onCardClick={(j) => setOpenJobId(j.id)} />
@@ -75,8 +79,8 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <JobDetailModal key={openJobId ?? ''} job={openJob} onClose={() => setOpenJobId(null)} onUpdate={updateJob} />
-      <QuickAdd open={quickOpen} onClose={() => setQuickOpen(false)} onCreate={createJob} />
+      <JobDetailModal key={openJobId ?? ''} job={openJob} onClose={() => setOpenJobId(null)} onUpdate={() => {}} />
+      <QuickAdd open={quickOpen} onClose={() => setQuickOpen(false)} onCreate={() => {}} />
     </div>
   );
 }

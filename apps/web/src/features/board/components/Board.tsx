@@ -5,11 +5,10 @@ import KanbanColumn from './KanbanColumn';
 
 interface BoardProps {
   jobs: Job[];
-  setJobs: React.Dispatch<React.SetStateAction<Job[]>>;
   onCardClick: (job: Job) => void;
 }
 
-export default function Board({ jobs, setJobs, onCardClick }: BoardProps) {
+export default function Board({ jobs, onCardClick }: BoardProps) {
   const [draggingId,    setDraggingId]    = useState<string | null>(null);
   const [dragOverStage, setDragOverStage] = useState<string | null>(null);
 
@@ -27,16 +26,8 @@ export default function Board({ jobs, setJobs, onCardClick }: BoardProps) {
     if (dragOverStage !== stageId) setDragOverStage(stageId);
   };
 
-  const onDrop = (stageId: string) => (e: React.DragEvent) => {
+  const onDrop = (_stageId: string) => (e: React.DragEvent) => {
     e.preventDefault();
-    if (!draggingId) return;
-    setJobs((prev) =>
-      prev.map((j) =>
-        j.id === draggingId
-          ? { ...j, stage: stageId as Job['stage'], appliedAt: j.appliedAt || new Date().toISOString().slice(0, 10) }
-          : j,
-      ),
-    );
     setDraggingId(null);
     setDragOverStage(null);
   };

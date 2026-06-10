@@ -46,4 +46,13 @@ public interface IJobService
     /// <param name="userId">The authenticated user's identifier.</param>
     /// <returns>True if deletion was successful; false if not found or not owned by user.</returns>
     Task<bool> DeleteJobAsync(Guid id, Guid userId);
+
+    /// <summary>
+    /// Updates only the status of a job, used for kanban drag-and-drop.
+    /// </summary>
+    /// <param name="id">The job identifier.</param>
+    /// <param name="dto">The new status.</param>
+    /// <param name="userId">The authenticated user's identifier.</param>
+    /// <returns>True if update was successful; false if not found or not owned by user.</returns>
+    Task<bool> PatchStatusAsync(Guid id, UpdateJobStatusDto dto, Guid userId);
 }

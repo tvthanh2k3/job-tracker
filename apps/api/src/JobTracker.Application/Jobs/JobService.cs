@@ -83,4 +83,19 @@ public class JobService : IJobService
 
         return result > 0;
     }
+
+    public async Task<bool> PatchStatusAsync(Guid id, UpdateJobStatusDto dto, Guid userId)
+    {
+        var job = await _unitOfWork.Repository<Job>().GetByIdAsync(id);
+
+        if (job == null || job.UserId != userId) return false;
+
+        job.Status = dto.Status;
+        job.UpdatedAt = DateTime.UtcNow;
+
+        _unitOfWork.Repository<Job>().Update(job);
+        await _unitOfWork.SaveChangesAsync();
+
+        return true;
+    }
 }

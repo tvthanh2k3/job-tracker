@@ -86,4 +86,16 @@ public class JobsController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPatch("{id}/status")]
+    public async Task<IActionResult> PatchStatus(Guid id, [FromBody] UpdateJobStatusDto dto)
+    {
+        var userId = GetCurrentUserId();
+        if (userId == null) return Unauthorized();
+
+        var success = await _jobService.PatchStatusAsync(id, dto, userId.Value);
+        if (!success) return NotFound();
+
+        return NoContent();
+    }
 }

@@ -3,9 +3,10 @@ import api from '@/lib/axios'
 
 export interface AuthUser {
   id: string
-  name: string
   email: string
-  role: string
+  fullName: string
+  avatarUrl?: string
+  roles: string[]
 }
 
 export interface AuthResponse {

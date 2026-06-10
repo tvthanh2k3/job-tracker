@@ -2,7 +2,6 @@ import type { Job } from '@/types/job';
 import { STAGE_BY_ID } from '@/types/stage';
 import { fmtDate, daysAgo } from '@/utils/date';
 import CompanyLogo from '@/components/CompanyLogo';
-import PriorityFlag from '@/components/PriorityFlag';
 import Icon from '@/components/Icon';
 
 interface JobCardProps {
@@ -42,7 +41,6 @@ export default function JobCard({ job, onClick, onDragStart, onDragEnd, isDraggi
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-0.5">
             <span className="text-[13px] font-semibold text-stone-900 truncate">{job.company}</span>
-            <PriorityFlag priority={job.priority} />
           </div>
           <div className="text-[12px] text-stone-500 truncate">{job.location}</div>
         </div>

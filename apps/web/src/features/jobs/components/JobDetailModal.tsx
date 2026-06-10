@@ -3,7 +3,6 @@ import type { Job } from '@/types/job';
 import { STAGES } from '@/types/stage';
 import { fmtDate, daysAgo } from '@/utils/date';
 import CompanyLogo from '@/components/CompanyLogo';
-import PriorityFlag from '@/components/PriorityFlag';
 import StagePill from '@/components/StagePill';
 import Icon from '@/components/Icon';
 import Meta from './Meta';
@@ -61,7 +60,6 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[13px] font-medium text-stone-500">{job.company}</span>
-              <PriorityFlag priority={job.priority} />
             </div>
             <h2 className="text-[22px] font-bold tracking-tight text-stone-900 leading-tight">{job.title}</h2>
             <div className="mt-2 flex items-center gap-2.5 flex-wrap">

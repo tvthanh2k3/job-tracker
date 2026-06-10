@@ -25,8 +25,6 @@ export default function DashboardPage() {
 
     if (activeFilter === 'active') {
       list = list.filter((j) => !['rejected', 'ghosted', 'offer'].includes(j.stage));
-    } else if (activeFilter === 'starred') {
-      list = list.filter((j) => j.priority === 'dream');
     } else if (activeFilter === 'archive') {
       list = list.filter((j) => ['rejected', 'ghosted'].includes(j.stage));
     } else if (activeFilter.startsWith('stage:')) {

@@ -2,7 +2,6 @@ import type { Job } from '@/types/job';
 import { fmtDate } from '@/utils/date';
 import CompanyLogo from '@/components/CompanyLogo';
 import StagePill from '@/components/StagePill';
-import PriorityFlag from '@/components/PriorityFlag';
 import Icon from '@/components/Icon';
 
 interface TableViewProps {
@@ -37,7 +36,6 @@ export default function TableView({ jobs, onCardClick }: TableViewProps) {
                   <div className="flex items-center gap-2.5">
                     <CompanyLogo company={j.company} size={28} />
                     <span className="font-semibold text-stone-900">{j.company}</span>
-                    <PriorityFlag priority={j.priority} />
                   </div>
                 </td>
                 <td className="px-4 py-3 text-stone-800">{j.title}</td>

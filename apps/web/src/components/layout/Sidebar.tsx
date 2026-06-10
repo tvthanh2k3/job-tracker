@@ -75,7 +75,6 @@ export default function Sidebar({ jobs, activeFilter, setActiveFilter }: Sidebar
         <div className="space-y-0.5 mb-5">
           {navItem('all',     'inbox',   'Tất cả đơn',  total)}
           {navItem('active',  'flag',    'Đang xử lý',  activeNotRej)}
-          {navItem('starred', 'star',    'Việc mơ ước', jobs.filter((j) => j.priority === 'dream').length)}
           {navItem('archive', 'archive', 'Lưu trữ',     jobs.filter((j) => ['rejected', 'ghosted'].includes(j.stage)).length)}
         </div>
 

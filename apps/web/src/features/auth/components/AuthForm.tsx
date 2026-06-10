@@ -161,8 +161,9 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
   const [showPw,   setShowPw]   = useState(false)
   const [showPw2,  setShowPw2]  = useState(false)
 
-  const [phase,      setPhase]      = useState<Phase>('idle')
-  const [delayReady, setDelayReady] = useState(false)
+  const [phase,       setPhase]       = useState<Phase>('idle')
+  const [delayReady,  setDelayReady]  = useState(false)
+  const [portalTarget, setPortalTarget] = useState<HTMLDivElement | null>(null)
   const delayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const btnRef = useRef<HTMLButtonElement>(null)
@@ -170,14 +171,12 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
 
   const isSignup = mode === 'signup'
 
-  // Settle only after both the 2s delay AND the API call have finished
   useEffect(() => {
     if (phase !== 'processing' || !delayReady || mutation.isPending) return
-    if (mutation.isSuccess) {
-      setPhase('confirmed')
-    } else if (mutation.isError) {
-      setPhase('idle')
-    }
+    const next = mutation.isSuccess ? 'confirmed' : mutation.isError ? 'idle' : null
+    if (!next) return
+    const id = setTimeout(() => setPhase(next), 0)
+    return () => clearTimeout(id)
   }, [phase, delayReady, mutation.isPending, mutation.isSuccess, mutation.isError])
 
   useEffect(() => {
@@ -193,6 +192,10 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
   useEffect(() => {
     return () => { if (delayTimerRef.current) clearTimeout(delayTimerRef.current) }
   }, [])
+
+  useEffect(() => {
+    setPortalTarget(frameRef.current)
+  }, [frameRef])
 
   const switchTo = (next: Mode) => {
     setMode(next)
@@ -365,8 +368,7 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
         )}
       </div>
 
-      {/* Overlay portaled into auth-frame so it covers both panels */}
-      {frameRef.current && createPortal(overlay, frameRef.current)}
+      {portalTarget && createPortal(overlay, portalTarget)}
     </div>
   )
 }

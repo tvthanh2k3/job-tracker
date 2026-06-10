@@ -1,4 +1,5 @@
 using JobTracker.Domain.Common;
+using JobTracker.Domain.Enums;
 
 namespace JobTracker.Domain.Entities;
 
@@ -8,6 +9,7 @@ public class Interview : BaseEntity
     public DateTime ScheduledAt { get; set; }
     public string Round { get; set; } = string.Empty;
     public string? Notes { get; set; }
+    public InterviewStatus Status { get; set; } = InterviewStatus.Upcoming;
 
     // Navigation properties
     public Job? Job { get; set; }

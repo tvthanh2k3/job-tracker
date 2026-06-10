@@ -2,6 +2,7 @@ using AutoMapper;
 using JobTracker.Application.Jobs.Dto;
 using JobTracker.Domain.Entities;
 using JobTracker.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobTracker.Application.Jobs;
 
@@ -21,13 +22,23 @@ public class JobService : IJobService
 
     public async Task<IEnumerable<JobDto>> GetAllJobsAsync(Guid userId)
     {
-        var jobs = await _unitOfWork.Repository<Job>().GetAllAsync(j => j.UserId == userId, isTracking: false);
+        var jobs = await _unitOfWork.Repository<Job>()
+            .GetQueryable()
+            .Where(j => j.UserId == userId)
+            .Include(j => j.Interviews)
+            .AsNoTracking()
+            .ToListAsync();
+
         return _mapper.Map<IEnumerable<JobDto>>(jobs);
     }
 
     public async Task<JobDto?> GetJobByIdAsync(Guid id, Guid userId)
     {
-        var job = await _unitOfWork.Repository<Job>().GetByIdAsync(id);
+        var job = await _unitOfWork.Repository<Job>()
+            .GetQueryable()
+            .Include(j => j.Interviews)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(j => j.Id == id);
 
         if (job == null || job.UserId != userId) return null;
 

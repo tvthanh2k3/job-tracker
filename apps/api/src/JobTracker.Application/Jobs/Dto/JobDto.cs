@@ -1,3 +1,4 @@
+using JobTracker.Application.Interviews.Dto;
 using JobTracker.Domain.Enums;
 
 namespace JobTracker.Application.Jobs.Dto;
@@ -16,4 +17,5 @@ public class JobDto
 	public JobStatus Status { get; set; }
 	public DateTime CreatedAt { get; set; }
 	public DateTime? UpdatedAt { get; set; }
+	public List<InterviewDto> Interviews { get; set; } = [];
 }

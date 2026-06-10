@@ -1,17 +1,18 @@
 import { useState } from 'react';
-import type { Job } from '@/types/job';
+import type { Job, StageId } from '@/types/job';
 import { STAGES } from '@/types/stage';
+import { usePatchJobStatus } from '@/features/jobs/queries/usePatchJobStatus';
 import KanbanColumn from './KanbanColumn';
 
 interface BoardProps {
   jobs: Job[];
-  setJobs: React.Dispatch<React.SetStateAction<Job[]>>;
   onCardClick: (job: Job) => void;
 }
 
-export default function Board({ jobs, setJobs, onCardClick }: BoardProps) {
+export default function Board({ jobs, onCardClick }: BoardProps) {
   const [draggingId,    setDraggingId]    = useState<string | null>(null);
   const [dragOverStage, setDragOverStage] = useState<string | null>(null);
+  const patchStatus = usePatchJobStatus();
 
   const onDragStart = (jobId: string) => (e: React.DragEvent) => {
     setDraggingId(jobId);
@@ -30,13 +31,7 @@ export default function Board({ jobs, setJobs, onCardClick }: BoardProps) {
   const onDrop = (stageId: string) => (e: React.DragEvent) => {
     e.preventDefault();
     if (!draggingId) return;
-    setJobs((prev) =>
-      prev.map((j) =>
-        j.id === draggingId
-          ? { ...j, stage: stageId as Job['stage'], appliedAt: j.appliedAt || new Date().toISOString().slice(0, 10) }
-          : j,
-      ),
-    );
+    patchStatus.mutate({ id: draggingId, stage: stageId as StageId });
     setDraggingId(null);
     setDragOverStage(null);
   };

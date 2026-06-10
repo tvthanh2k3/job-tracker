@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import type { Job, StageId } from '@/types/job';
+import type { StageId } from '@/types/job';
 import { STAGES } from '@/types/stage';
+import { useCreateJob } from '@/features/jobs/queries/useCreateJob';
 import Icon from '@/components/Icon';
 import Field from './Field';
 
@@ -10,10 +11,9 @@ const inputCls =
 interface QuickAddProps {
   open: boolean;
   onClose: () => void;
-  onCreate: (job: Job) => void;
 }
 
-export default function QuickAdd({ open, onClose, onCreate }: QuickAddProps) {
+export default function QuickAdd({ open, onClose }: QuickAddProps) {
   const [company,  setCompany]  = useState('');
   const [title,    setTitle]    = useState('');
   const [location, setLocation] = useState('');
@@ -21,6 +21,8 @@ export default function QuickAdd({ open, onClose, onCreate }: QuickAddProps) {
   const [stage,    setStage]    = useState<StageId>('applied');
   const [link,     setLink]     = useState('');
   const [note,     setNote]     = useState('');
+
+  const createJob = useCreateJob();
 
   if (!open) return null;
 
@@ -31,21 +33,24 @@ export default function QuickAdd({ open, onClose, onCreate }: QuickAddProps) {
 
   const submit = () => {
     if (!company.trim() || !title.trim()) return;
-    onCreate({
-      id: 'j' + Date.now(),
-      company:   company.trim(),
-      title:     title.trim(),
-      location:  location.trim() || 'Remote',
-      salary:    salary.trim(),
-      stage,
-      appliedAt: new Date().toISOString().slice(0, 10),
-      jdLink:    link.trim(),
-      note:      note.trim(),
-      source:    'Tự nhập',
-      interviews: [],
-    });
-    reset();
-    onClose();
+    createJob.mutate(
+      {
+        company:  company.trim(),
+        title:    title.trim(),
+        location: location.trim() || undefined,
+        salary:   salary.trim() || undefined,
+        url:      link.trim() || undefined,
+        note:     note.trim() || undefined,
+        source:   'Tự nhập',
+        status:   stage,
+      },
+      {
+        onSuccess: () => {
+          reset();
+          onClose();
+        },
+      },
+    );
   };
 
   return (
@@ -124,10 +129,10 @@ export default function QuickAdd({ open, onClose, onCreate }: QuickAddProps) {
           <button onClick={onClose} className="px-4 py-1.5 rounded-md text-[13px] text-stone-600 hover:bg-stone-100">Huỷ</button>
           <button
             onClick={submit}
-            disabled={!company.trim() || !title.trim()}
+            disabled={!company.trim() || !title.trim() || createJob.isPending}
             className="px-4 py-1.5 rounded-md text-[13px] font-semibold text-white disabled:opacity-50 bg-primary"
           >
-            Thêm đơn ứng tuyển
+            {createJob.isPending ? 'Đang lưu…' : 'Thêm đơn ứng tuyển'}
           </button>
         </div>
       </div>

@@ -2,7 +2,6 @@ import type { Job } from '@/types/job';
 import { daysAgo } from '@/utils/date';
 import CompanyLogo from '@/components/CompanyLogo';
 import StagePill from '@/components/StagePill';
-import PriorityFlag from '@/components/PriorityFlag';
 
 interface ListViewProps {
   jobs: Job[];
@@ -20,8 +19,8 @@ export default function ListView({ jobs, onCardClick }: ListViewProps) {
         >
           <CompanyLogo company={j.company} size={40} />
           <div className="w-[200px] flex-shrink-0">
-            <div className="text-[13px] font-semibold text-stone-900 flex items-center gap-1.5">
-              {j.company}<PriorityFlag priority={j.priority} />
+            <div className="text-[13px] font-semibold text-stone-900">
+              {j.company}
             </div>
             <div className="text-[11px] text-stone-500">{j.location}</div>
           </div>

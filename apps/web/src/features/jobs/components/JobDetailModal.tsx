@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import type { Job } from '@/types/job';
+import type { Job, StageId } from '@/types/job';
 import { STAGES } from '@/types/stage';
 import { fmtDate, daysAgo } from '@/utils/date';
+import { useUpdateJob, type UpdateJobPayload } from '@/features/jobs/queries/useUpdateJob';
 import CompanyLogo from '@/components/CompanyLogo';
-import PriorityFlag from '@/components/PriorityFlag';
 import StagePill from '@/components/StagePill';
 import Icon from '@/components/Icon';
 import Meta from './Meta';
@@ -11,7 +11,6 @@ import Meta from './Meta';
 interface JobDetailModalProps {
   job: Job | null;
   onClose: () => void;
-  onUpdate: (job: Job) => void;
 }
 
 type Tab = 'overview' | 'interviews' | 'activity';
@@ -22,10 +21,12 @@ const interviewStatusMap = {
   upcoming: { color: '#EAB308', bg: '#FEF3C7', label: 'Sắp diễn ra' },
 };
 
-export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModalProps) {
+export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
   const [tab, setTab]           = useState<Tab>('overview');
   const [noteEdit, setNoteEdit] = useState(false);
   const [noteVal, setNoteVal]   = useState(job?.note ?? '');
+
+  const updateJob = useUpdateJob();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -35,7 +36,24 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
 
   if (!job) return null;
 
-  const saveNote = () => { onUpdate({ ...job, note: noteVal }); setNoteEdit(false); };
+  const buildPayload = (overrides: Partial<UpdateJobPayload> = {}): UpdateJobPayload => ({
+    id:       job.id,
+    title:    job.title,
+    company:  job.company,
+    location: job.location,
+    salary:   job.salary,
+    url:      job.jdLink,
+    note:     job.note,
+    source:   job.source,
+    status:   job.stage,
+    ...overrides,
+  });
+
+  const saveNote = () => {
+    updateJob.mutate(buildPayload({ note: noteVal }), {
+      onSuccess: () => setNoteEdit(false),
+    });
+  };
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'overview',   label: 'Tổng quan' },
@@ -61,7 +79,6 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[13px] font-medium text-stone-500">{job.company}</span>
-              <PriorityFlag priority={job.priority} />
             </div>
             <h2 className="text-[22px] font-bold tracking-tight text-stone-900 leading-tight">{job.title}</h2>
             <div className="mt-2 flex items-center gap-2.5 flex-wrap">
@@ -127,8 +144,12 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
                         >
                           Huỷ
                         </button>
-                        <button onClick={saveNote} className="px-3 py-1.5 rounded-md text-[12px] font-semibold text-white bg-primary">
-                          Lưu
+                        <button
+                          onClick={saveNote}
+                          disabled={updateJob.isPending}
+                          className="px-3 py-1.5 rounded-md text-[12px] font-semibold text-white bg-primary disabled:opacity-50"
+                        >
+                          {updateJob.isPending ? 'Đang lưu…' : 'Lưu'}
                         </button>
                       </div>
                     </div>
@@ -188,7 +209,6 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
                         <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md" style={{ background: s.bg, color: s.color }}>{s.label}</span>
                       </div>
                       <div className="text-[12px] text-stone-500 mb-2">
-                        {iv.with && <span className="inline-flex items-center gap-1 mr-3"><Icon name="user" size={11} />{iv.with}</span>}
                         {iv.date && <span className="inline-flex items-center gap-1"><Icon name="cal" size={11} />{fmtDate(iv.date)}</span>}
                       </div>
                       {iv.notes && <p className="text-[13px] text-stone-700 leading-relaxed">{iv.notes}</p>}
@@ -208,7 +228,7 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
                 { d: new Date().toISOString().slice(0, 10), t: 'Bạn đã mở đơn ứng tuyển này' },
                 ...job.interviews.map((iv) => ({
                   d: iv.date,
-                  t: `${iv.round}${iv.with ? ` với ${iv.with}` : ''} — ${{ passed: 'đã qua', failed: 'không qua', upcoming: 'sắp diễn ra' }[iv.status]}`,
+                  t: `${iv.round} — ${{ passed: 'đã qua', failed: 'không qua', upcoming: 'sắp diễn ra' }[iv.status]}`,
                 })),
                 job.appliedAt ? { d: job.appliedAt, t: `Đã ứng tuyển qua ${job.source ?? 'không rõ'}` } : null,
               ]
@@ -231,7 +251,7 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
         <div className="px-7 py-3.5 border-t border-stone-100 bg-stone-50/40 flex items-center justify-between">
           <select
             value={job.stage}
-            onChange={(e) => onUpdate({ ...job, stage: e.target.value as Job['stage'] })}
+            onChange={(e) => updateJob.mutate(buildPayload({ status: e.target.value as StageId }))}
             className="px-2.5 py-1.5 rounded-md bg-white border border-stone-200 text-[12px] font-medium text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-300/40"
           >
             {STAGES.map((s) => (

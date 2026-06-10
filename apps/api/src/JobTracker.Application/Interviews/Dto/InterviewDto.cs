@@ -1,3 +1,5 @@
+using JobTracker.Domain.Enums;
+
 namespace JobTracker.Application.Interviews.Dto;
 
 public class InterviewDto
@@ -7,6 +9,7 @@ public class InterviewDto
     public DateTime ScheduledAt { get; set; }
     public string Round { get; set; } = string.Empty;
     public string? Notes { get; set; }
+    public InterviewStatus Status { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }

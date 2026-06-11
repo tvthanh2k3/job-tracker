@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace JobTracker.Api;
 
@@ -25,6 +26,10 @@ public static class Installers
         services.AddControllers(options =>
         {
             options.Filters.Add<ValidationFilter>();
+        })
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
 
         InstallOpenApi(services);

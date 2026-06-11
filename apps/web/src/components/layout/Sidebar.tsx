@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import type { Job } from '@/types/job';
 import Icon from '@/components/Icon';
 
@@ -8,6 +9,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ jobs, activeFilter, setActiveFilter }: SidebarProps) {
+  const navigate = useNavigate();
   const total = jobs.length;
   const activeNotRej = jobs.filter(
     (j) => !['rejected', 'ghosted', 'offer'].includes(j.stage),
@@ -39,11 +41,13 @@ export default function Sidebar({ jobs, activeFilter, setActiveFilter }: Sidebar
   return (
     <aside className="w-[260px] flex-shrink-0 border-r border-stone-200/70 flex flex-col bg-white">
       {/* Logo */}
-      <div className="px-5 pt-5 pb-4 flex items-center gap-2">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary">
-          <Icon name="briefcase" size={16} className="text-white" />
-        </div>
-        <span className="text-[19px] font-bold tracking-tight text-stone-900">Job Tracker</span>
+      <div className="px-5 pt-5 pb-4">
+        <button onClick={() => navigate('/')} className="flex items-center gap-2 cursor-pointer">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary">
+            <Icon name="briefcase" size={16} className="text-white" />
+          </div>
+          <span className="text-[19px] font-bold tracking-tight text-stone-900">Job Tracker</span>
+        </button>
       </div>
 
       {/* Workspace */}

@@ -1,4 +1,3 @@
-import { STAGES } from '@/types/stage';
 import type { Job } from '@/types/job';
 import Icon from '@/components/Icon';
 
@@ -9,11 +8,6 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ jobs, activeFilter, setActiveFilter }: SidebarProps) {
-  const counts = STAGES.reduce<Record<string, number>>((acc, s) => {
-    acc[s.id] = jobs.filter((j) => j.stage === s.id).length;
-    return acc;
-  }, {});
-
   const total = jobs.length;
   const activeNotRej = jobs.filter(
     (j) => !['rejected', 'ghosted', 'offer'].includes(j.stage),
@@ -78,30 +72,6 @@ export default function Sidebar({ jobs, activeFilter, setActiveFilter }: Sidebar
           {navItem('archive', 'archive', 'Lưu trữ',     jobs.filter((j) => ['rejected', 'ghosted'].includes(j.stage)).length)}
         </div>
 
-        <div className="flex items-center justify-between px-3 mb-2">
-          <span className="text-[11px] font-semibold text-stone-400 uppercase tracking-wider">Theo giai đoạn</span>
-        </div>
-        <div className="space-y-0.5 mb-5">
-          {STAGES.map((s) => {
-            const active = activeFilter === `stage:${s.id}`;
-            return (
-              <button
-                key={s.id}
-                onClick={() => setActiveFilter(`stage:${s.id}`)}
-                className={`w-full flex items-center justify-between gap-3 px-3 py-1.5 rounded-md text-[13px] transition-colors ${
-                  active ? 'bg-stone-100 text-stone-900' : 'text-stone-600 hover:bg-stone-50'
-                }`}
-              >
-                <span className="flex items-center gap-2.5">
-                  <span className="w-2 h-2 rounded-full" style={{ background: s.dot }} />
-                  <span>{s.label}</span>
-                </span>
-                <span className="text-stone-400 text-xs">{counts[s.id] ?? 0}</span>
-              </button>
-            );
-          })}
-        </div>
-
         <div className="text-[11px] font-semibold text-stone-400 uppercase tracking-wider px-3 mb-2">Công cụ</div>
         <div className="space-y-0.5 mb-5">
           <div className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-stone-700 hover:bg-stone-100 cursor-pointer">
@@ -120,13 +90,6 @@ export default function Sidebar({ jobs, activeFilter, setActiveFilter }: Sidebar
         </div>
       </nav>
 
-      {/* Tip */}
-      <div className="m-3 p-3 rounded-xl border border-stone-200/70 bg-white">
-        <div className="text-[12px] text-stone-700 font-semibold mb-1">Mẹo nhỏ</div>
-        <div className="text-[11px] text-stone-500 leading-relaxed">
-          Kéo thẻ sang cột khác để đổi giai đoạn. Bấm vào thẻ để xem chi tiết.
-        </div>
-      </div>
     </aside>
   );
 }

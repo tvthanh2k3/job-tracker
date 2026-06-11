@@ -43,10 +43,7 @@ export default function Sidebar({ jobs, activeFilter, setActiveFilter }: Sidebar
         <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-primary">
           <Icon name="briefcase" size={16} className="text-white" />
         </div>
-        <div className="flex items-baseline">
-          <span className="text-[19px] font-bold tracking-tight text-stone-900">Trackr</span>
-          <span className="text-[19px] font-bold text-primary">.</span>
-        </div>
+        <span className="text-[19px] font-bold tracking-tight text-stone-900">Job Tracker</span>
       </div>
 
       {/* Workspace */}

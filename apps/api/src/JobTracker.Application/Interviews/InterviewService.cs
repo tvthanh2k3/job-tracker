@@ -48,6 +48,7 @@ public class InterviewService : IInterviewService
         if (existingInterview == null) return false;
 
         _mapper.Map(updateInterviewDto, existingInterview);
+        existingInterview.Status = updateInterviewDto.Status;
         existingInterview.UpdatedAt = DateTime.UtcNow;
 
         _unitOfWork.Repository<Interview>().Update(existingInterview);

@@ -73,7 +73,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
     setIvForm((f) => ({ ...f, open: false, editingId: null }));
 
   const submitIvForm = () => {
-    const scheduledAt = `${ivForm.date}T00:00:00`;
+    const scheduledAt = `${ivForm.date}T00:00:00Z`;
     if (ivForm.editingId) {
       updateInterview.mutate(
         { id: ivForm.editingId, scheduledAt, round: ivForm.round, notes: ivForm.notes || undefined, status: ivForm.status },

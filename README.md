@@ -6,6 +6,8 @@ A web app to track job applications — log positions, manage pipeline status (A
 
 **[Live Demo](https://salmon-water-0fed1e00f.7.azurestaticapps.net)**
 
+**Demo account:** `user@jobtracker.dev` / `User@123456`
+
 ## Features
 
 ### ✅ Implemented

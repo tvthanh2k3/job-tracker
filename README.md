@@ -60,7 +60,7 @@ dotnet ef database update --project src/JobTracker.Infrastructure --startup-proj
 dotnet run --project src/JobTracker.Api/JobTracker.Api.csproj
 ```
 
-API: `https://localhost:5001` · Scalar docs: `https://localhost:5001/scalar/v1`
+API: `https://localhost:7231` · Scalar docs: `https://localhost:7231/scalar/v1`
 
 ### Frontend
 
@@ -70,7 +70,7 @@ npm install
 npm run dev
 ```
 
-Set `VITE_API_BASE_URL` in `.env` to point at the backend (default: `http://localhost:5000`).
+Set `VITE_API_BASE_URL` in `.env` to point at the backend (default: `http://localhost:5120`).
 
 App: `http://localhost:5173`
 

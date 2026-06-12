@@ -157,7 +157,6 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
   const [remember, setRemember] = useState(false)
   const [agree,    setAgree]    = useState(false)
   const [formErr,  setFormErr]  = useState('')
-  const [origin,   setOrigin]   = useState({ cx: '50%', cy: '50%' })
   const [showPw,   setShowPw]   = useState(false)
   const [showPw2,  setShowPw2]  = useState(false)
 
@@ -166,7 +165,8 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
   const [portalTarget, setPortalTarget] = useState<HTMLDivElement | null>(null)
   const delayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const btnRef = useRef<HTMLButtonElement>(null)
+  const btnRef    = useRef<HTMLButtonElement>(null)
+  const revealRef = useRef<HTMLDivElement>(null)
   const mutation = mode === 'login' ? loginMutation : registerMutation
 
   const isSignup = mode === 'signup'
@@ -210,14 +210,19 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
   }
 
   const computeOrigin = () => {
-    const frame = frameRef.current
-    const btn   = btnRef.current
-    if (!frame || !btn) return
+    const frame  = frameRef.current
+    const btn    = btnRef.current
+    const reveal = revealRef.current
+    if (!frame || !btn || !reveal) return
     const fr = frame.getBoundingClientRect()
     const br = btn.getBoundingClientRect()
     const cx = ((br.left + br.width  / 2) - fr.left) / fr.width  * 100
     const cy = ((br.top  + br.height / 2) - fr.top)  / fr.height * 100
-    setOrigin({ cx: `${cx}%`, cy: `${cy}%` })
+    reveal.style.transition = 'none'
+    reveal.style.setProperty('--cx', `${cx}%`)
+    reveal.style.setProperty('--cy', `${cy}%`)
+    void reveal.offsetWidth
+    reveal.style.transition = ''
   }
 
   const submit = (e: { preventDefault(): void }) => {
@@ -250,8 +255,8 @@ export default function AuthForm({ frameRef }: AuthFormProps) {
 
   const overlay = (
     <div
+      ref={revealRef}
       className={`auth-reveal ${phase !== 'idle' ? 'is-on' : ''}`}
-      style={{ '--cx': origin.cx, '--cy': origin.cy } as React.CSSProperties}
     >
       {phase === 'processing' && (
         <div className="auth-reveal-content">

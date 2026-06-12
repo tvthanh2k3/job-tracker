@@ -32,6 +32,7 @@ export interface ApiJob {
 
 function mapInterview(iv: ApiInterview): Interview {
   return {
+    id: iv.id,
     round: iv.round,
     date: iv.scheduledAt,
     status: iv.status.toLowerCase() as InterviewStatus,

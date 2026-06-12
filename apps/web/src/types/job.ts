@@ -9,6 +9,7 @@ export type StageId =
 export type InterviewStatus = 'passed' | 'failed' | 'upcoming';
 
 export interface Interview {
+  id: string;
   round: string;
   date: string;
   status: InterviewStatus;

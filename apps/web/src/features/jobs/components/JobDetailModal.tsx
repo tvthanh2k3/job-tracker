@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Job, StageId } from '@/types/job';
 import { STAGES } from '@/types/stage';
 import { fmtDate, daysAgo } from '@/utils/date';
@@ -21,18 +21,43 @@ const interviewStatusMap = {
   upcoming: { color: '#EAB308', bg: '#FEF3C7', label: 'Sắp diễn ra' },
 };
 
+const EDIT_FIELD_LABELS: Record<string, string> = {
+  title:    'Tiêu đề vị trí',
+  company:  'Công ty',
+  location: 'Hình thức làm việc',
+  salary:   'Mức lương',
+  source:   'Nguồn',
+  jdLink:   'Link JD',
+};
+
 export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
   const [tab, setTab]           = useState<Tab>('overview');
   const [noteEdit, setNoteEdit] = useState(false);
   const [noteVal, setNoteVal]   = useState(job?.note ?? '');
+  const [editMode, setEditMode] = useState(false);
+  const [editVals, setEditVals] = useState({
+    title:    '',
+    company:  '',
+    location: '',
+    salary:   '',
+    source:   '',
+    jdLink:   '',
+    note:     '',
+  });
 
   const updateJob = useUpdateJob();
+  const backdropDown = useRef(false);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (editMode) { setEditMode(false); return; }
+        onClose();
+      }
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  }, [onClose, editMode]);
 
   if (!job) return null;
 
@@ -55,6 +80,38 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
     });
   };
 
+  const startEdit = () => {
+    setEditVals({
+      title:    job.title,
+      company:  job.company,
+      location: job.location ?? '',
+      salary:   job.salary ?? '',
+      source:   job.source ?? '',
+      jdLink:   job.jdLink ?? '',
+      note:     job.note ?? '',
+    });
+    setNoteEdit(false);
+    setTab('overview');
+    setEditMode(true);
+  };
+
+  const cancelEdit = () => setEditMode(false);
+
+  const saveEdit = () => {
+    updateJob.mutate(
+      buildPayload({
+        title:    editVals.title,
+        company:  editVals.company,
+        location: editVals.location || undefined,
+        salary:   editVals.salary || undefined,
+        source:   editVals.source || undefined,
+        url:      editVals.jdLink || undefined,
+        note:     editVals.note || undefined,
+      }),
+      { onSuccess: () => setEditMode(false) },
+    );
+  };
+
   const tabs: { id: Tab; label: string }[] = [
     { id: 'overview',   label: 'Tổng quan' },
     { id: 'interviews', label: `Phỏng vấn (${job.interviews.length})` },
@@ -64,16 +121,18 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center"
-      onClick={onClose}
       style={{ animation: 'fadeIn 150ms ease-out' }}
     >
-      <div className="absolute inset-0 bg-stone-900/40 backdrop-blur-sm" />
+      <div
+        className="absolute inset-0 bg-stone-900/40 backdrop-blur-sm"
+        onMouseDown={() => { backdropDown.current = true; }}
+        onMouseUp={() => { if (backdropDown.current) onClose(); backdropDown.current = false; }}
+      />
       <div
         className="relative bg-white rounded-2xl shadow-2xl w-[860px] max-w-[94vw] max-h-[88vh] flex flex-col overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
+        onMouseDown={() => { backdropDown.current = false; }}
         style={{ animation: 'slideUp 200ms cubic-bezier(.2,.8,.2,1)' }}
       >
-        {/* Header */}
         <div className="px-7 pt-6 pb-4 border-b border-stone-100 flex items-start gap-4">
           <CompanyLogo company={job.company} size={56} />
           <div className="flex-1 min-w-0">
@@ -98,7 +157,6 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
           </button>
         </div>
 
-        {/* Tabs */}
         <div className="px-7 border-b border-stone-100 flex items-center gap-1">
           {tabs.map((t) => (
             <button
@@ -114,9 +172,35 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
           ))}
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto px-7 py-5">
-          {tab === 'overview' && (
+
+          {tab === 'overview' && editMode && (
+            <div className="grid grid-cols-2 gap-4">
+              {(['title', 'company', 'location', 'salary', 'source', 'jdLink'] as const).map((key) => (
+                <div key={key}>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">
+                    {EDIT_FIELD_LABELS[key]}
+                  </label>
+                  <input
+                    value={editVals[key]}
+                    onChange={(e) => setEditVals((v) => ({ ...v, [key]: e.target.value }))}
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                  />
+                </div>
+              ))}
+              <div className="col-span-2">
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">Ghi chú</label>
+                <textarea
+                  value={editVals.note}
+                  onChange={(e) => setEditVals((v) => ({ ...v, note: e.target.value }))}
+                  rows={4}
+                  className="w-full px-3.5 py-3 rounded-lg border border-stone-200 text-[13px] text-stone-800 leading-relaxed focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                />
+              </div>
+            </div>
+          )}
+
+          {tab === 'overview' && !editMode && (
             <div className="grid grid-cols-3 gap-5">
               <div className="col-span-2 space-y-5">
                 {/* Notes */}
@@ -160,7 +244,6 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                   )}
                 </div>
 
-                {/* JD Link */}
                 {job.jdLink && (
                   <div>
                     <h3 className="text-[12px] font-semibold uppercase tracking-wider text-stone-500 mb-2">Mô tả công việc</h3>
@@ -177,13 +260,12 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                 )}
               </div>
 
-              {/* Metadata */}
               <div className="space-y-4">
                 <Meta label="Giai đoạn"      value={<StagePill stageId={job.stage} />} />
                 <Meta label="Ngày ứng tuyển" value={job.appliedAt ? `${fmtDate(job.appliedAt)} · ${daysAgo(job.appliedAt)}` : '—'} />
                 <Meta label="Nguồn"          value={job.source ?? '—'} />
                 <Meta label="Mức lương"      value={job.salary ?? '—'} />
-                <Meta label="Địa điểm"       value={job.location} />
+                <Meta label="Hình thức làm việc" value={job.location} />
               </div>
             </div>
           )}
@@ -247,23 +329,52 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
           )}
         </div>
 
-        {/* Footer */}
         <div className="px-7 py-3.5 border-t border-stone-100 bg-stone-50/40 flex items-center justify-between">
-          <select
-            value={job.stage}
-            onChange={(e) => updateJob.mutate(buildPayload({ status: e.target.value as StageId }))}
-            className="px-2.5 py-1.5 rounded-md bg-white border border-stone-200 text-[12px] font-medium text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-300/40"
-          >
-            {STAGES.map((s) => (
-              <option key={s.id} value={s.id}>Chuyển sang {s.label}</option>
-            ))}
-          </select>
-          <div className="flex items-center gap-2">
-            <button className="px-3 py-1.5 rounded-md text-[12px] text-stone-600 hover:bg-stone-100">Lưu trữ</button>
-            <button onClick={onClose} className="px-4 py-1.5 rounded-md text-[12px] font-semibold text-white bg-primary">
-              Xong
-            </button>
-          </div>
+          {editMode ? (
+            <>
+              <button
+                onClick={cancelEdit}
+                className="px-3 py-1.5 rounded-md text-[12px] text-stone-600 hover:bg-stone-100"
+              >
+                Huỷ
+              </button>
+              <button
+                onClick={saveEdit}
+                disabled={updateJob.isPending}
+                className="px-4 py-1.5 rounded-md text-[12px] font-semibold text-white bg-primary disabled:opacity-50"
+              >
+                {updateJob.isPending ? 'Đang lưu…' : 'Lưu thay đổi'}
+              </button>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <select
+                    value={job.stage}
+                    onChange={(e) => updateJob.mutate(buildPayload({ status: e.target.value as StageId }))}
+                    className="appearance-none pl-2.5 pr-8 py-1.5 rounded-md bg-white border border-stone-200 text-[12px] font-medium text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-300/40"
+                  >
+                    {STAGES.map((s) => (
+                      <option key={s.id} value={s.id}>Chuyển sang {s.label}</option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+                    <Icon name="chevD" size={12} className="text-stone-500" />
+                  </div>
+                </div>
+                <button className="px-3 py-1.5 rounded-md border border-stone-200 text-[12px] text-stone-600 hover:bg-stone-100">Lưu trữ</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <button onClick={startEdit} className="px-3 py-1.5 rounded-md border border-stone-200 text-[12px] text-stone-600 hover:bg-stone-100">
+                  Chỉnh sửa
+                </button>
+                <button onClick={onClose} className="px-4 py-1.5 rounded-md text-[12px] font-semibold text-white bg-primary">
+                  Xong
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

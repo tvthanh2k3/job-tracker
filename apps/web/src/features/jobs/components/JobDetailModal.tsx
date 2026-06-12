@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import type { Job, StageId } from '@/types/job';
+import type { Job, StageId, Interview, InterviewStatus } from '@/types/job';
 import { STAGES } from '@/types/stage';
 import { fmtDate, daysAgo } from '@/utils/date';
 import { useUpdateJob, type UpdateJobPayload } from '@/features/jobs/queries/useUpdateJob';
+import { useCreateInterview } from '@/features/interviews/queries/useCreateInterview';
+import { useUpdateInterview } from '@/features/interviews/queries/useUpdateInterview';
+import { useDeleteInterview } from '@/features/interviews/queries/useDeleteInterview';
 import CompanyLogo from '@/components/CompanyLogo';
 import StagePill from '@/components/StagePill';
 import Icon from '@/components/Icon';
@@ -46,7 +49,45 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
   });
 
   const updateJob = useUpdateJob();
+  const createInterview = useCreateInterview();
+  const updateInterview = useUpdateInterview();
+  const deleteInterview = useDeleteInterview();
   const backdropDown = useRef(false);
+
+  const [ivForm, setIvForm] = useState({
+    open: false,
+    editingId: null as string | null,
+    round: '',
+    date: '',
+    notes: '',
+    status: 'upcoming' as InterviewStatus,
+  });
+
+  const openCreate = () =>
+    setIvForm({ open: true, editingId: null, round: '', date: '', notes: '', status: 'upcoming' });
+
+  const openEdit = (iv: Interview) =>
+    setIvForm({ open: true, editingId: iv.id, round: iv.round, date: iv.date.slice(0, 10), notes: iv.notes ?? '', status: iv.status });
+
+  const closeIvForm = () =>
+    setIvForm((f) => ({ ...f, open: false, editingId: null }));
+
+  const submitIvForm = () => {
+    const scheduledAt = `${ivForm.date}T00:00:00Z`;
+    if (ivForm.editingId) {
+      updateInterview.mutate(
+        { id: ivForm.editingId, scheduledAt, round: ivForm.round, notes: ivForm.notes || undefined, status: ivForm.status },
+        { onSuccess: closeIvForm },
+      );
+    } else {
+      createInterview.mutate(
+        { jobId: job?.id ?? '', scheduledAt, round: ivForm.round, notes: ivForm.notes || undefined },
+        { onSuccess: closeIvForm },
+      );
+    }
+  };
+
+  const ivPending = createInterview.isPending || updateInterview.isPending;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -272,13 +313,13 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
 
           {tab === 'interviews' && (
             <div className="space-y-3">
-              {job.interviews.length === 0 && (
+              {job.interviews.length === 0 && !ivForm.open && (
                 <div className="text-center py-12 text-stone-400 text-[13px]">Chưa có buổi phỏng vấn nào.</div>
               )}
               {job.interviews.map((iv, idx) => {
                 const s = interviewStatusMap[iv.status];
                 return (
-                  <div key={idx} className="flex gap-4 p-4 rounded-xl border border-stone-200/70 bg-white">
+                  <div key={iv.id} className="flex gap-4 p-4 rounded-xl border border-stone-200/70 bg-white">
                     <div className="flex flex-col items-center pt-1">
                       <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: s.bg, color: s.color }}>
                         <Icon name={iv.status === 'upcoming' ? 'clock' : iv.status === 'failed' ? 'x' : 'check'} size={14} />
@@ -288,7 +329,21 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
                         <h4 className="text-[14px] font-semibold text-stone-900">{iv.round}</h4>
-                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md" style={{ background: s.bg, color: s.color }}>{s.label}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md" style={{ background: s.bg, color: s.color }}>{s.label}</span>
+                          <button
+                            onClick={() => openEdit(iv)}
+                            className="w-6 h-6 rounded flex items-center justify-center text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition"
+                          >
+                            <Icon name="note" size={12} />
+                          </button>
+                          <button
+                            onClick={() => deleteInterview.mutate(iv.id)}
+                            className="w-6 h-6 rounded flex items-center justify-center text-stone-400 hover:text-red-500 hover:bg-red-50 transition"
+                          >
+                            <Icon name="x" size={12} />
+                          </button>
+                        </div>
                       </div>
                       <div className="text-[12px] text-stone-500 mb-2">
                         {iv.date && <span className="inline-flex items-center gap-1"><Icon name="cal" size={11} />{fmtDate(iv.date)}</span>}
@@ -298,9 +353,76 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                   </div>
                 );
               })}
-              <button className="w-full py-3 rounded-xl border border-dashed border-stone-300 text-stone-500 text-[12px] font-medium hover:bg-stone-50 transition flex items-center justify-center gap-1.5">
-                <Icon name="plus" size={12} />Thêm vòng phỏng vấn
-              </button>
+
+              {ivForm.open ? (
+                <div className="p-4 rounded-xl border border-stone-300 bg-stone-50 space-y-3">
+                  <h4 className="text-[12px] font-semibold uppercase tracking-wider text-stone-500">
+                    {ivForm.editingId ? 'Chỉnh sửa vòng phỏng vấn' : 'Thêm vòng phỏng vấn'}
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-medium text-stone-500 mb-1">Tên vòng</label>
+                      <input
+                        value={ivForm.round}
+                        onChange={(e) => setIvForm((f) => ({ ...f, round: e.target.value }))}
+                        placeholder="Vd: Vòng kỹ thuật"
+                        className="w-full px-3 py-2 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300 bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-medium text-stone-500 mb-1">Ngày</label>
+                      <input
+                        type="date"
+                        value={ivForm.date}
+                        onChange={(e) => setIvForm((f) => ({ ...f, date: e.target.value }))}
+                        className="w-full px-3 py-2 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300 bg-white"
+                      />
+                    </div>
+                    {ivForm.editingId && (
+                      <div>
+                        <label className="block text-[11px] font-medium text-stone-500 mb-1">Kết quả</label>
+                        <select
+                          value={ivForm.status}
+                          onChange={(e) => setIvForm((f) => ({ ...f, status: e.target.value as InterviewStatus }))}
+                          className="w-full px-3 py-2 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 bg-white"
+                        >
+                          <option value="upcoming">Sắp diễn ra</option>
+                          <option value="passed">Đã qua</option>
+                          <option value="failed">Không qua</option>
+                        </select>
+                      </div>
+                    )}
+                    <div className={ivForm.editingId ? '' : 'col-span-2'}>
+                      <label className="block text-[11px] font-medium text-stone-500 mb-1">Ghi chú</label>
+                      <input
+                        value={ivForm.notes}
+                        onChange={(e) => setIvForm((f) => ({ ...f, notes: e.target.value }))}
+                        placeholder="Tuỳ chọn"
+                        className="w-full px-3 py-2 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300 bg-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <button onClick={closeIvForm} className="px-3 py-1.5 rounded-md text-[12px] text-stone-600 hover:bg-stone-200">
+                      Huỷ
+                    </button>
+                    <button
+                      onClick={submitIvForm}
+                      disabled={ivPending || !ivForm.round || !ivForm.date}
+                      className="px-4 py-1.5 rounded-md text-[12px] font-semibold text-white bg-primary disabled:opacity-50"
+                    >
+                      {ivPending ? 'Đang lưu…' : 'Lưu'}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={openCreate}
+                  className="w-full py-3 rounded-xl border border-dashed border-stone-300 text-stone-500 text-[12px] font-medium hover:bg-stone-50 transition flex items-center justify-center gap-1.5"
+                >
+                  <Icon name="plus" size={12} />Thêm vòng phỏng vấn
+                </button>
+              )}
             </div>
           )}
 

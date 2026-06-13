@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { StageId } from '@/types/job';
 import { STAGES } from '@/types/stage';
 import { useCreateJob } from '@/features/jobs/queries/useCreateJob';
@@ -23,6 +23,16 @@ export default function QuickAdd({ open, onClose }: QuickAddProps) {
   const [note,     setNote]     = useState('');
 
   const createJob = useCreateJob();
+
+  const backdropDown = useRef(false);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
 
   if (!open) return null;
 
@@ -54,14 +64,17 @@ export default function QuickAdd({ open, onClose }: QuickAddProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onClose}>
-      <div className="absolute inset-0 bg-stone-900/40 backdrop-blur-sm" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div
+        className="absolute inset-0 bg-stone-900/40 backdrop-blur-sm"
+        onMouseDown={() => { backdropDown.current = true; }}
+        onMouseUp={() => { if (backdropDown.current) onClose(); backdropDown.current = false; }}
+      />
       <div
         className="relative bg-white rounded-2xl shadow-2xl w-[560px] max-w-[94vw] overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
+        onMouseDown={() => { backdropDown.current = false; }}
         style={{ animation: 'slideUp 200ms cubic-bezier(.2,.8,.2,1)' }}
       >
-        {/* Header */}
         <div className="px-6 pt-5 pb-4 border-b border-stone-100 flex items-center justify-between">
           <div>
             <h2 className="text-[18px] font-bold tracking-tight text-stone-900">Đơn ứng tuyển mới</h2>
@@ -72,7 +85,6 @@ export default function QuickAdd({ open, onClose }: QuickAddProps) {
           </button>
         </div>
 
-        {/* Form */}
         <div className="px-6 py-5 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <Field label="Công ty" required>
@@ -124,7 +136,6 @@ export default function QuickAdd({ open, onClose }: QuickAddProps) {
           </Field>
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-3.5 border-t border-stone-100 bg-stone-50/40 flex justify-end gap-2">
           <button onClick={onClose} className="px-4 py-1.5 rounded-md text-[13px] text-stone-600 hover:bg-stone-100">Huỷ</button>
           <button

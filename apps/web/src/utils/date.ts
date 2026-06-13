@@ -1,15 +1,16 @@
 export function fmtDate(iso: string | undefined): string {
   if (!iso) return '—';
-  const d = new Date(iso);
-  return d.toLocaleDateString('vi-VN', { day: 'numeric', month: 'numeric' });
+  const date = new Date(iso);
+  return date.toLocaleDateString('vi-VN', { day: 'numeric', month: 'numeric' });
 }
 
 export function daysAgo(iso: string | undefined): string | null {
   if (!iso) return null;
-  const d = new Date(iso);
+  const date = new Date(iso);
+  date.setHours(0, 0, 0, 0);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const diff = Math.round((today.getTime() - d.getTime()) / 86400000);
+  const diff = Math.round((today.getTime() - date.getTime()) / 86400000);
   if (diff === 0) return 'hôm nay';
   if (diff === 1) return 'hôm qua';
   if (diff < 7) return `${diff} ngày trước`;

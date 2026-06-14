@@ -217,7 +217,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
 
           {tab === 'overview' && editMode && (
             <div className="grid grid-cols-2 gap-4">
-              {(['title', 'company', 'location', 'salary', 'source', 'jdLink'] as const).map((key) => (
+              {(['title', 'company', 'salary', 'source', 'jdLink'] as const).map((key) => (
                 <div key={key}>
                   <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">
                     {EDIT_FIELD_LABELS[key]}
@@ -229,6 +229,20 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                   />
                 </div>
               ))}
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">
+                  Hình thức làm việc
+                </label>
+                <select
+                  value={editVals.location}
+                  onChange={(e) => setEditVals((v) => ({...v, location: e.target.value }))}
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                >
+                  <option value="Onsite">Trực tiếp</option>
+                  <option value="Hybrid">Linh hoạt</option>
+                  <option value="Remote">Từ xa</option>
+                </select>
+              </div>
               <div className="col-span-2">
                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">Ghi chú</label>
                 <textarea

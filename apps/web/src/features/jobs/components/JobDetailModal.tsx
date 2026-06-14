@@ -202,7 +202,8 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`px-3 py-3 text-[13px] font-medium transition relative ${tab === t.id ? 'text-stone-900' : 'text-stone-500 hover:text-stone-800'}`}
+              disabled={editMode && t.id !== 'overview'}
+              className={`px-3 py-3 text-[13px] font-medium transition relative ${tab === t.id ? 'text-stone-900' : 'text-stone-500 hover:text-stone-800'} disabled:opacity-40 disabled:cursor-not-allowed`}
             >
               {t.label}
               {tab === t.id && (

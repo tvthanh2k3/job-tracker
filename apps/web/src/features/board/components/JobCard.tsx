@@ -1,4 +1,5 @@
 import type { Job } from '@/types/job';
+import { locationLabel } from '@/types/job';
 import { STAGE_BY_ID } from '@/types/stage';
 import { fmtDate, daysAgo } from '@/utils/date';
 import CompanyLogo from '@/components/CompanyLogo';
@@ -42,7 +43,7 @@ export default function JobCard({ job, onClick, onDragStart, onDragEnd, isDraggi
           <div className="flex items-center gap-1.5 mb-0.5">
             <span className="text-[13px] font-semibold text-stone-900 truncate">{job.company}</span>
           </div>
-          <div className="text-[12px] text-stone-500 truncate">{job.location}</div>
+          <div className="text-[12px] text-stone-500 truncate">{locationLabel[job.location] ?? job.location}</div>
         </div>
         <button
           onClick={(e) => e.stopPropagation()}

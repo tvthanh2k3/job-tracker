@@ -393,6 +393,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                   type="date"
                   value={ivForm.date}
                   onChange={(e) => setIvForm((f) => ({ ...f, date: e.target.value }))}
+                  min={new Date().toISOString().slice(0, 10)}
                   className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
                 />
               </div>

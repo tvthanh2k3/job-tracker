@@ -24,6 +24,12 @@ const interviewStatusMap = {
   upcoming: { color: '#EAB308', bg: '#FEF3C7', label: 'Sắp diễn ra' },
 };
 
+const locationLabel: Record<string, string> = {
+  Onsite: 'Trực tiếp',
+  Hybrid: 'Linh hoạt',
+  Remote: 'Từ xa'
+};
+
 const EDIT_FIELD_LABELS: Record<string, string> = {
   title:    'Tiêu đề vị trí',
   company:  'Công ty',
@@ -184,7 +190,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
               <StagePill stageId={job.stage} />
               <span className="text-[12px] text-stone-400">·</span>
               <span className="text-[12px] text-stone-500 inline-flex items-center gap-1.5">
-                <Icon name="map" size={12} />{job.location}
+                <Icon name="map" size={12} />{locationLabel[job.location] ?? job.location}
               </span>
               <span className="text-[12px] text-stone-400">·</span>
               <span className="text-[12px] text-stone-500 inline-flex items-center gap-1.5">
@@ -320,7 +326,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                 <Meta label="Ngày ứng tuyển" value={job.appliedAt ? `${fmtDate(job.appliedAt)} · ${daysAgo(job.appliedAt)}` : '—'} />
                 <Meta label="Nguồn"          value={job.source ?? '—'} />
                 <Meta label="Mức lương"      value={job.salary ?? '—'} />
-                <Meta label="Hình thức làm việc" value={job.location} />
+                <Meta label="Hình thức làm việc" value={locationLabel[job.location] ?? job.location} />
               </div>
             </div>
           )}

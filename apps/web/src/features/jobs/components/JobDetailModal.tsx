@@ -132,7 +132,6 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
       note:     job.note ?? '',
     });
     setNoteEdit(false);
-    setTab('overview');
     setEditMode(true);
   };
 

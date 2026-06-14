@@ -487,9 +487,11 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                 <button className="px-3 py-1.5 rounded-md border border-stone-200 text-[12px] text-stone-600 hover:bg-stone-100">Lưu trữ</button>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={startEdit} className="px-3 py-1.5 rounded-md border border-stone-200 text-[12px] text-stone-600 hover:bg-stone-100">
-                  Chỉnh sửa
-                </button>
+                {tab === 'overview' && (
+                  <button onClick={startEdit} className="px-3 py-1.5 rounded-md border border-stone-200 text-[12px] text-stone-600 hover:bg-stone-100">
+                    Chỉnh sửa
+                  </button>
+                )}
                 <button onClick={onClose} className="px-4 py-1.5 rounded-md text-[12px] font-semibold text-white bg-primary">
                   Xong
                 </button>

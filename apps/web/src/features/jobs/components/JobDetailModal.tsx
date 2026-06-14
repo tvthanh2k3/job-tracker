@@ -203,7 +203,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              disabled={editMode && t.id !== 'overview'}
+              disabled={(editMode && t.id !== 'overview') || (ivForm.open && t.id !== 'interviews')}
               className={`px-3 py-3 text-[13px] font-medium transition relative ${tab === t.id ? 'text-stone-900' : 'text-stone-500 hover:text-stone-800'} disabled:opacity-40 disabled:cursor-not-allowed`}
             >
               {t.label}
@@ -326,9 +326,9 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
             </div>
           )}
 
-          {tab === 'interviews' && (
+          {tab === 'interviews' && !ivForm.open && (
             <div className="space-y-3">
-              {job.interviews.length === 0 && !ivForm.open && (
+              {job.interviews.length === 0 && (
                 <div className="text-center py-12 text-stone-400 text-[13px]">Chưa có buổi phỏng vấn nào.</div>
               )}
               {job.interviews.map((iv, idx) => {
@@ -346,16 +346,10 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                         <h4 className="text-[14px] font-semibold text-stone-900">{iv.round}</h4>
                         <div className="flex items-center gap-2">
                           <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md" style={{ background: s.bg, color: s.color }}>{s.label}</span>
-                          <button
-                            onClick={() => openEdit(iv)}
-                            className="w-6 h-6 rounded flex items-center justify-center text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition"
-                          >
+                          <button onClick={() => openEdit(iv)} className="w-6 h-6 rounded flex items-center justify-center text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition">
                             <Icon name="note" size={12} />
                           </button>
-                          <button
-                            onClick={() => deleteInterview.mutate(iv.id)}
-                            className="w-6 h-6 rounded flex items-center justify-center text-stone-400 hover:text-red-500 hover:bg-red-50 transition"
-                          >
+                          <button onClick={() => deleteInterview.mutate(iv.id)} className="w-6 h-6 rounded flex items-center justify-center text-stone-400 hover:text-red-500 hover:bg-red-50 transition">
                             <Icon name="x" size={12} />
                           </button>
                         </div>
@@ -368,76 +362,63 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                   </div>
                 );
               })}
+              <button
+                onClick={openCreate}
+                className="w-full py-3 rounded-xl border border-dashed border-stone-300 text-stone-500 text-[12px] font-medium hover:bg-stone-50 transition flex items-center justify-center gap-1.5"
+              >
+                <Icon name="plus" size={12} />Thêm vòng phỏng vấn
+              </button>
+            </div>
+          )}
 
-              {ivForm.open ? (
-                <div className="p-4 rounded-xl border border-stone-300 bg-stone-50 space-y-3">
-                  <h4 className="text-[12px] font-semibold uppercase tracking-wider text-stone-500">
-                    {ivForm.editingId ? 'Chỉnh sửa vòng phỏng vấn' : 'Thêm vòng phỏng vấn'}
-                  </h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-medium text-stone-500 mb-1">Tên vòng</label>
-                      <input
-                        value={ivForm.round}
-                        onChange={(e) => setIvForm((f) => ({ ...f, round: e.target.value }))}
-                        placeholder="Vd: Vòng kỹ thuật"
-                        className="w-full px-3 py-2 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300 bg-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-medium text-stone-500 mb-1">Ngày</label>
-                      <input
-                        type="date"
-                        value={ivForm.date}
-                        onChange={(e) => setIvForm((f) => ({ ...f, date: e.target.value }))}
-                        className="w-full px-3 py-2 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300 bg-white"
-                      />
-                    </div>
-                    {ivForm.editingId && (
-                      <div>
-                        <label className="block text-[11px] font-medium text-stone-500 mb-1">Kết quả</label>
-                        <select
-                          value={ivForm.status}
-                          onChange={(e) => setIvForm((f) => ({ ...f, status: e.target.value as InterviewStatus }))}
-                          className="w-full px-3 py-2 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 bg-white"
-                        >
-                          <option value="upcoming">Sắp diễn ra</option>
-                          <option value="passed">Đã qua</option>
-                          <option value="failed">Không qua</option>
-                        </select>
-                      </div>
-                    )}
-                    <div className={ivForm.editingId ? '' : 'col-span-2'}>
-                      <label className="block text-[11px] font-medium text-stone-500 mb-1">Ghi chú</label>
-                      <input
-                        value={ivForm.notes}
-                        onChange={(e) => setIvForm((f) => ({ ...f, notes: e.target.value }))}
-                        placeholder="Tuỳ chọn"
-                        className="w-full px-3 py-2 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300 bg-white"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <button onClick={closeIvForm} className="px-3 py-1.5 rounded-md text-[12px] text-stone-600 hover:bg-stone-200">
-                      Huỷ
-                    </button>
-                    <button
-                      onClick={submitIvForm}
-                      disabled={ivPending || !ivForm.round || !ivForm.date}
-                      className="px-4 py-1.5 rounded-md text-[12px] font-semibold text-white bg-primary disabled:opacity-50"
-                    >
-                      {ivPending ? 'Đang lưu…' : 'Lưu'}
-                    </button>
-                  </div>
+          {tab === 'interviews' && ivForm.open && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <h4 className="text-[12px] font-semibold uppercase tracking-wider text-stone-500 mb-4">
+                  {ivForm.editingId ? 'Chỉnh sửa vòng phỏng vấn' : 'Thêm vòng phỏng vấn'}
+                </h4>
+              </div>
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">Tên vòng</label>
+                <input
+                  value={ivForm.round}
+                  onChange={(e) => setIvForm((f) => ({ ...f, round: e.target.value }))}
+                  placeholder="Vd: Vòng kỹ thuật"
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">Ngày</label>
+                <input
+                  type="date"
+                  value={ivForm.date}
+                  onChange={(e) => setIvForm((f) => ({ ...f, date: e.target.value }))}
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                />
+              </div>
+              {ivForm.editingId && (
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">Kết quả</label>
+                  <select
+                    value={ivForm.status}
+                    onChange={(e) => setIvForm((f) => ({ ...f, status: e.target.value as InterviewStatus }))}
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                  >
+                    <option value="upcoming">Sắp diễn ra</option>
+                    <option value="passed">Đã qua</option>
+                    <option value="failed">Không qua</option>
+                  </select>
                 </div>
-              ) : (
-                <button
-                  onClick={openCreate}
-                  className="w-full py-3 rounded-xl border border-dashed border-stone-300 text-stone-500 text-[12px] font-medium hover:bg-stone-50 transition flex items-center justify-center gap-1.5"
-                >
-                  <Icon name="plus" size={12} />Thêm vòng phỏng vấn
-                </button>
               )}
+              <div className={ivForm.editingId ? '' : 'col-span-2'}>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">Ghi chú</label>
+                <input
+                  value={ivForm.notes}
+                  onChange={(e) => setIvForm((f) => ({ ...f, notes: e.target.value }))}
+                  placeholder="Tuỳ chọn"
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                />
+              </div>
             </div>
           )}
 
@@ -467,20 +448,20 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
         </div>
 
         <div className="px-7 py-3.5 border-t border-stone-100 bg-stone-50/40 flex items-center justify-between">
-          {editMode ? (
+          {editMode || ivForm.open ? (
             <>
               <button
-                onClick={cancelEdit}
+                onClick={editMode ? cancelEdit : closeIvForm}
                 className="px-3 py-1.5 rounded-md border border-stone-200 text-[12px] text-stone-600 hover:bg-stone-100"
               >
                 Huỷ
               </button>
               <button
-                onClick={saveEdit}
-                disabled={updateJob.isPending}
+                onClick={editMode ? saveEdit : submitIvForm}
+                disabled={editMode ? updateJob.isPending : (ivPending || !ivForm.round || !ivForm.date)}
                 className="px-4 py-1.5 rounded-md text-[12px] font-semibold text-white bg-primary disabled:opacity-50"
               >
-                {updateJob.isPending ? 'Đang lưu…' : 'Lưu thay đổi'}
+                {(editMode ? updateJob.isPending : ivPending) ? 'Đang lưu…' : 'Lưu thay đổi'}
               </button>
             </>
           ) : (

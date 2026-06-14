@@ -29,3 +29,9 @@ export interface Job {
   note?: string;
   interviews: Interview[];
 }
+
+export const locationLabel: Record<string, string> = {
+  Onsite: 'Trực tiếp',
+  Hybrid: 'Linh hoạt',
+  Remote: 'Từ xa',
+};

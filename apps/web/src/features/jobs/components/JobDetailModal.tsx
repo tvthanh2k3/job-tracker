@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Job, StageId, Interview, InterviewStatus } from '@/types/job';
+import { locationLabel } from '@/types/job';
 import { STAGES } from '@/types/stage';
 import { fmtDate, daysAgo } from '@/utils/date';
 import { useUpdateJob, type UpdateJobPayload } from '@/features/jobs/queries/useUpdateJob';
@@ -22,12 +23,6 @@ const interviewStatusMap = {
   passed:   { color: '#10B981', bg: '#D1FAE5', label: 'Đã qua' },
   failed:   { color: '#EF4444', bg: '#FEE2E2', label: 'Không qua' },
   upcoming: { color: '#EAB308', bg: '#FEF3C7', label: 'Sắp diễn ra' },
-};
-
-const locationLabel: Record<string, string> = {
-  Onsite: 'Trực tiếp',
-  Hybrid: 'Linh hoạt',
-  Remote: 'Từ xa'
 };
 
 const EDIT_FIELD_LABELS: Record<string, string> = {

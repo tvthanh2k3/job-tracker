@@ -456,7 +456,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
             <>
               <button
                 onClick={cancelEdit}
-                className="px-3 py-1.5 rounded-md text-[12px] text-stone-600 hover:bg-stone-100"
+                className="px-3 py-1.5 rounded-md border border-stone-200 text-[12px] text-stone-600 hover:bg-stone-100"
               >
                 Huỷ
               </button>

@@ -229,7 +229,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
               {(['title', 'company', 'salary', 'source', 'jdLink'] as const).map((key) => (
                 <div key={key}>
                   <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">
-                    {EDIT_FIELD_LABELS[key]}{REQUIRED_EDIT_FIELDS.has(key) && <span className="text-primary ml-0.5">*</span>}
+                    {EDIT_FIELD_LABELS[key]}{REQUIRED_EDIT_FIELDS.has(key) && <span className="text-red-500 ml-0.5">*</span>}
                   </label>
                   <input
                     value={editVals[key]}

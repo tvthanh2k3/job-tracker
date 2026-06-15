@@ -400,15 +400,20 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
               {ivForm.editingId && (
                 <div>
                   <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">Kết quả</label>
-                  <select
-                    value={ivForm.status}
-                    onChange={(e) => setIvForm((f) => ({ ...f, status: e.target.value as InterviewStatus }))}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
-                  >
-                    <option value="upcoming">Sắp diễn ra</option>
-                    <option value="passed">Đã qua</option>
-                    <option value="failed">Không qua</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={ivForm.status}
+                      onChange={(e) => setIvForm((f) => ({ ...f, status: e.target.value as InterviewStatus }))}
+                      className="appearance-none w-full px-3.5 pr-10 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                    >
+                      <option value="upcoming">Sắp diễn ra</option>
+                      <option value="passed">Đã qua</option>
+                      <option value="failed">Không qua</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                      <Icon name="chevD" size={12} className="text-stone-500" />
+                    </div>
+                  </div>
                 </div>
               )}
               <div className={ivForm.editingId ? '' : 'col-span-2'}>

@@ -50,6 +50,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
     jdLink:   '',
     note:     '',
   });
+  const [editErrors, setEditErrors] = useState<{ title?: string; company?: string }>({});
 
   const updateJob = useUpdateJob();
   const createInterview = useCreateInterview();
@@ -138,9 +139,14 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
     setEditMode(true);
   };
 
-  const cancelEdit = () => setEditMode(false);
+  const cancelEdit = () => { setEditMode(false); setEditErrors({}); };
 
   const saveEdit = () => {
+    const errors: { title?: string; company?: string } = {};
+    if (!editVals.title.trim()) errors.title = 'Tiêu đề vị trí không được để trống';
+    if (!editVals.company.trim()) errors.company = 'Công ty không được để trống';
+    if (Object.keys(errors).length) { setEditErrors(errors); return; }
+
     updateJob.mutate(
       buildPayload({
         title:    editVals.title,
@@ -151,7 +157,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
         url:      editVals.jdLink || undefined,
         note:     editVals.note || undefined,
       }),
-      { onSuccess: () => setEditMode(false) },
+      { onSuccess: () => { setEditMode(false); setEditErrors({}); } },
     );
   };
 
@@ -227,9 +233,21 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                   </label>
                   <input
                     value={editVals[key]}
-                    onChange={(e) => setEditVals((v) => ({ ...v, [key]: e.target.value }))}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                    onChange={(e) => {
+                      setEditVals((v) => ({ ...v, [key]: e.target.value }));
+                      if (key === 'title' || key === 'company') {
+                        setEditErrors((err) => ({...err, [key]: undefined }));
+                      }
+                    }}
+                    className={`w-full px-3.5 py-2.5 rounded-lg border text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300 ${
+                      (key === 'title' || key === 'company') && editErrors[key as 'title' | 'company']
+                        ? 'border-red-400'
+                        : 'border-stone-200'
+                    }`}
                   />
+                  {(key === 'title' || key === 'company') && editErrors[key as 'title' | 'company'] && (
+                    <p className="mt-1 text-[11px] text-red-500">{editErrors[key as 'title' | 'company']}</p>
+                  )}
                 </div>
               ))}
               <div>

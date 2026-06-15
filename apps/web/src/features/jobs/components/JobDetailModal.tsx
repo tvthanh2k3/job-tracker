@@ -34,6 +34,8 @@ const EDIT_FIELD_LABELS: Record<string, string> = {
   jdLink:   'Link JD',
 };
 
+const REQUIRED_EDIT_FIELDS = new Set(['title', 'company']);
+
 export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
   const [tab, setTab]           = useState<Tab>('overview');
   const [noteEdit, setNoteEdit] = useState(false);
@@ -48,6 +50,9 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
     jdLink:   '',
     note:     '',
   });
+  const [editErrors, setEditErrors] = useState<{ title?: string; company?: string }>({});
+  const [ivErrors, setIvErrors] = useState<{ round?: string; date?: string }>({});
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; round: string } | null>(null);
 
   const updateJob = useUpdateJob();
   const createInterview = useCreateInterview();
@@ -70,10 +75,17 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
   const openEdit = (iv: Interview) =>
     setIvForm({ open: true, editingId: iv.id, round: iv.round, date: iv.date.slice(0, 10), notes: iv.notes ?? '', status: iv.status });
 
-  const closeIvForm = () =>
+  const closeIvForm = () => {
     setIvForm((f) => ({ ...f, open: false, editingId: null }));
+    setIvErrors({});
+  };
 
   const submitIvForm = () => {
+    const errors: { round?: string; date?: string } = {};
+    if (!ivForm.round.trim()) errors.round = 'Tên vòng không được để trống.';
+    if (!ivForm.date)         errors.date  = 'Ngày không được để trống.';
+    if (Object.keys(errors).length) { setIvErrors(errors); return; }
+
     const scheduledAt = `${ivForm.date}T00:00:00Z`;
     if (ivForm.editingId) {
       updateInterview.mutate(
@@ -93,13 +105,14 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        if (deleteConfirm) { setDeleteConfirm(null); return; }
         if (editMode) { setEditMode(false); return; }
         onClose();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose, editMode]);
+  }, [onClose, editMode, deleteConfirm]);
 
   if (!job) return null;
 
@@ -136,9 +149,14 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
     setEditMode(true);
   };
 
-  const cancelEdit = () => setEditMode(false);
+  const cancelEdit = () => { setEditMode(false); setEditErrors({}); };
 
   const saveEdit = () => {
+    const errors: { title?: string; company?: string } = {};
+    if (!editVals.title.trim()) errors.title = 'Tiêu đề vị trí không được để trống.';
+    if (!editVals.company.trim()) errors.company = 'Công ty không được để trống.';
+    if (Object.keys(errors).length) { setEditErrors(errors); return; }
+
     updateJob.mutate(
       buildPayload({
         title:    editVals.title,
@@ -149,7 +167,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
         url:      editVals.jdLink || undefined,
         note:     editVals.note || undefined,
       }),
-      { onSuccess: () => setEditMode(false) },
+      { onSuccess: () => { setEditMode(false); setEditErrors({}); } },
     );
   };
 
@@ -221,28 +239,45 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
               {(['title', 'company', 'salary', 'source', 'jdLink'] as const).map((key) => (
                 <div key={key}>
                   <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">
-                    {EDIT_FIELD_LABELS[key]}
+                    {EDIT_FIELD_LABELS[key]}{REQUIRED_EDIT_FIELDS.has(key) && <span className="text-red-500 ml-0.5">*</span>}
                   </label>
                   <input
                     value={editVals[key]}
-                    onChange={(e) => setEditVals((v) => ({ ...v, [key]: e.target.value }))}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                    onChange={(e) => {
+                      setEditVals((v) => ({ ...v, [key]: e.target.value }));
+                      if (key === 'title' || key === 'company') {
+                        setEditErrors((err) => ({...err, [key]: undefined }));
+                      }
+                    }}
+                    className={`w-full px-3.5 py-2.5 rounded-lg border text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300 ${
+                      (key === 'title' || key === 'company') && editErrors[key as 'title' | 'company']
+                        ? 'border-red-400'
+                        : 'border-stone-200'
+                    }`}
                   />
+                  {(key === 'title' || key === 'company') && editErrors[key as 'title' | 'company'] && (
+                    <p className="mt-1 text-[11px] text-red-500">{editErrors[key as 'title' | 'company']}</p>
+                  )}
                 </div>
               ))}
               <div>
                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">
                   Hình thức làm việc
                 </label>
-                <select
-                  value={editVals.location}
-                  onChange={(e) => setEditVals((v) => ({...v, location: e.target.value }))}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
-                >
-                  <option value="Onsite">Trực tiếp</option>
-                  <option value="Hybrid">Linh hoạt</option>
-                  <option value="Remote">Từ xa</option>
-                </select>
+                <div className="relative">
+                  <select
+                    value={editVals.location}
+                    onChange={(e) => setEditVals((v) => ({...v, location: e.target.value }))}
+                    className="appearance-none w-full px-3.5 pr-10 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                  >
+                    <option value="Onsite">Trực tiếp</option>
+                    <option value="Hybrid">Linh hoạt</option>
+                    <option value="Remote">Từ xa</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                    <Icon name="chevD" size={12} className="text-stone-500" />
+                  </div>
+                </div>
               </div>
               <div className="col-span-2">
                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">Ghi chú</label>
@@ -349,7 +384,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                           <button onClick={() => openEdit(iv)} className="w-6 h-6 rounded flex items-center justify-center text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition">
                             <Icon name="note" size={12} />
                           </button>
-                          <button onClick={() => deleteInterview.mutate(iv.id)} className="w-6 h-6 rounded flex items-center justify-center text-stone-400 hover:text-red-500 hover:bg-red-50 transition">
+                          <button onClick={() => setDeleteConfirm({ id: iv.id, round: iv.round })} className="w-6 h-6 rounded flex items-center justify-center text-stone-400 hover:text-red-500 hover:bg-red-50 transition">
                             <Icon name="x" size={12} />
                           </button>
                         </div>
@@ -379,36 +414,53 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                 </h4>
               </div>
               <div>
-                <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">Tên vòng</label>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">
+                  Tên vòng<span className="text-red-500 ml-0.5">*</span>
+                </label>
                 <input
                   value={ivForm.round}
-                  onChange={(e) => setIvForm((f) => ({ ...f, round: e.target.value }))}
+                  onChange={(e) => {
+                    setIvForm((f) => ({ ...f, round: e.target.value }));
+                    setIvErrors((err) => ({ ...err, round: undefined }));
+                  }}
                   placeholder="Vd: Vòng kỹ thuật"
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                  className={`w-full px-3.5 py-2.5 rounded-lg border text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300 ${ivErrors.round ? 'border-red-400' : 'border-stone-200'}`}
                 />
+                {ivErrors.round && <p className="mt-1 text-[11px] text-red-500">{ivErrors.round}</p>}
               </div>
               <div>
-                <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">Ngày</label>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">
+                  Ngày<span className="text-red-500 ml-0.5">*</span>
+                </label>
                 <input
                   type="date"
                   value={ivForm.date}
-                  onChange={(e) => setIvForm((f) => ({ ...f, date: e.target.value }))}
+                  onChange={(e) => {
+                    setIvForm((f) => ({ ...f, date: e.target.value }));
+                    setIvErrors((err) => ({ ...err, date: undefined }));
+                  }}
                   min={new Date().toISOString().slice(0, 10)}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                  className={`w-full px-3.5 py-2.5 rounded-lg border text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300 ${ivErrors.date ? 'border-red-400' : 'border-stone-200'}`}
                 />
+                {ivErrors.date && <p className="mt-1 text-[11px] text-red-500">{ivErrors.date}</p>}
               </div>
               {ivForm.editingId && (
                 <div>
                   <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">Kết quả</label>
-                  <select
-                    value={ivForm.status}
-                    onChange={(e) => setIvForm((f) => ({ ...f, status: e.target.value as InterviewStatus }))}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
-                  >
-                    <option value="upcoming">Sắp diễn ra</option>
-                    <option value="passed">Đã qua</option>
-                    <option value="failed">Không qua</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={ivForm.status}
+                      onChange={(e) => setIvForm((f) => ({ ...f, status: e.target.value as InterviewStatus }))}
+                      className="appearance-none w-full px-3.5 pr-10 py-2.5 rounded-lg border border-stone-200 text-[13px] text-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-300/40 focus:border-stone-300"
+                    >
+                      <option value="upcoming">Sắp diễn ra</option>
+                      <option value="passed">Đã qua</option>
+                      <option value="failed">Không qua</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                      <Icon name="chevD" size={12} className="text-stone-500" />
+                    </div>
+                  </div>
                 </div>
               )}
               <div className={ivForm.editingId ? '' : 'col-span-2'}>
@@ -459,7 +511,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
               </button>
               <button
                 onClick={editMode ? saveEdit : submitIvForm}
-                disabled={editMode ? updateJob.isPending : (ivPending || !ivForm.round || !ivForm.date)}
+                disabled={editMode ? updateJob.isPending : ivPending}
                 className="px-4 py-1.5 rounded-md text-[12px] font-semibold text-white bg-primary disabled:opacity-50"
               >
                 {(editMode ? updateJob.isPending : ivPending) ? 'Đang lưu…' : 'Lưu thay đổi'}
@@ -498,6 +550,32 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
           )}
         </div>
       </div>
+
+      {deleteConfirm && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-stone-900/30 backdrop-blur-[2px]">
+          <div className="bg-white rounded-2xl shadow-xl w-[340px] p-5" style={{ animation: 'slideUp 180ms cubic-bezier(.2,.8,.2,1)' }}>
+            <p className="text-[14px] font-semibold text-stone-900 mb-1">Xoá vòng phỏng vấn?</p>
+            <p className="text-[13px] text-stone-500 mb-5">
+              Vòng <span className="font-medium text-stone-700">"{deleteConfirm.round}"</span> sẽ bị xoá và không thể khôi phục.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                className="px-3 py-1.5 rounded-md border border-stone-200 text-[12px] text-stone-600 hover:bg-stone-100 transition"
+              >
+                Huỷ
+              </button>
+              <button
+                onClick={() => { deleteInterview.mutate(deleteConfirm.id); setDeleteConfirm(null); }}
+                disabled={deleteInterview.isPending}
+                className="px-3 py-1.5 rounded-md bg-red-500 text-[12px] font-semibold text-white hover:bg-red-600 transition disabled:opacity-50"
+              >
+                {deleteInterview.isPending ? 'Đang xoá…' : 'Xoá'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

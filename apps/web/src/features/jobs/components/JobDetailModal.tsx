@@ -52,6 +52,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
   });
   const [editErrors, setEditErrors] = useState<{ title?: string; company?: string }>({});
   const [ivErrors, setIvErrors] = useState<{ round?: string; date?: string }>({});
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; round: string } | null>(null);
 
   const updateJob = useUpdateJob();
   const createInterview = useCreateInterview();
@@ -104,13 +105,14 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        if (deleteConfirm) { setDeleteConfirm(null); return; }
         if (editMode) { setEditMode(false); return; }
         onClose();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose, editMode]);
+  }, [onClose, editMode, deleteConfirm]);
 
   if (!job) return null;
 
@@ -382,7 +384,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
                           <button onClick={() => openEdit(iv)} className="w-6 h-6 rounded flex items-center justify-center text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition">
                             <Icon name="note" size={12} />
                           </button>
-                          <button onClick={() => deleteInterview.mutate(iv.id)} className="w-6 h-6 rounded flex items-center justify-center text-stone-400 hover:text-red-500 hover:bg-red-50 transition">
+                          <button onClick={() => setDeleteConfirm({ id: iv.id, round: iv.round })} className="w-6 h-6 rounded flex items-center justify-center text-stone-400 hover:text-red-500 hover:bg-red-50 transition">
                             <Icon name="x" size={12} />
                           </button>
                         </div>
@@ -548,6 +550,32 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
           )}
         </div>
       </div>
+
+      {deleteConfirm && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-stone-900/30 backdrop-blur-[2px]">
+          <div className="bg-white rounded-2xl shadow-xl w-[340px] p-5" style={{ animation: 'slideUp 180ms cubic-bezier(.2,.8,.2,1)' }}>
+            <p className="text-[14px] font-semibold text-stone-900 mb-1">Xoá vòng phỏng vấn?</p>
+            <p className="text-[13px] text-stone-500 mb-5">
+              Vòng <span className="font-medium text-stone-700">"{deleteConfirm.round}"</span> sẽ bị xoá và không thể khôi phục.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                className="px-3 py-1.5 rounded-md border border-stone-200 text-[12px] text-stone-600 hover:bg-stone-100 transition"
+              >
+                Huỷ
+              </button>
+              <button
+                onClick={() => { deleteInterview.mutate(deleteConfirm.id); setDeleteConfirm(null); }}
+                disabled={deleteInterview.isPending}
+                className="px-3 py-1.5 rounded-md bg-red-500 text-[12px] font-semibold text-white hover:bg-red-600 transition disabled:opacity-50"
+              >
+                {deleteInterview.isPending ? 'Đang xoá…' : 'Xoá'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

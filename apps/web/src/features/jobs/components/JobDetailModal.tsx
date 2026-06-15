@@ -34,6 +34,8 @@ const EDIT_FIELD_LABELS: Record<string, string> = {
   jdLink:   'Link JD',
 };
 
+const REQUIRED_EDIT_FIELDS = new Set(['title', 'company']);
+
 export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
   const [tab, setTab]           = useState<Tab>('overview');
   const [noteEdit, setNoteEdit] = useState(false);
@@ -221,7 +223,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
               {(['title', 'company', 'salary', 'source', 'jdLink'] as const).map((key) => (
                 <div key={key}>
                   <label className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1.5">
-                    {EDIT_FIELD_LABELS[key]}
+                    {EDIT_FIELD_LABELS[key]}{REQUIRED_EDIT_FIELDS.has(key) && <span className="text-red-500 ml-0.5">*</span>}
                   </label>
                   <input
                     value={editVals[key]}

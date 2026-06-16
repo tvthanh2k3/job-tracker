@@ -107,12 +107,13 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
       if (e.key === 'Escape') {
         if (deleteConfirm) { setDeleteConfirm(null); return; }
         if (editMode) { setEditMode(false); setEditErrors({}); return; }
+        if (ivForm.open) { closeIvForm(); return; }
         onClose();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose, editMode, deleteConfirm]);
+  }, [onClose, editMode, deleteConfirm, ivForm.open]);
 
   if (!job) return null;
 

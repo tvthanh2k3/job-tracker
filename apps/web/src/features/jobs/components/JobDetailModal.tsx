@@ -106,7 +106,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (deleteConfirm) { setDeleteConfirm(null); return; }
-        if (editMode) { setEditMode(false); return; }
+        if (editMode) { setEditMode(false); setEditErrors({}); return; }
         onClose();
       }
     };
@@ -146,6 +146,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
       note:     job.note ?? '',
     });
     setNoteEdit(false);
+    setEditErrors({});
     setEditMode(true);
   };
 

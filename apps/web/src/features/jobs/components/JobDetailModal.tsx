@@ -106,13 +106,14 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (deleteConfirm) { setDeleteConfirm(null); return; }
-        if (editMode) { setEditMode(false); return; }
+        if (editMode) { setEditMode(false); setEditErrors({}); return; }
+        if (ivForm.open) { closeIvForm(); return; }
         onClose();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose, editMode, deleteConfirm]);
+  }, [onClose, editMode, deleteConfirm, ivForm.open]);
 
   if (!job) return null;
 
@@ -146,6 +147,7 @@ export default function JobDetailModal({ job, onClose }: JobDetailModalProps) {
       note:     job.note ?? '',
     });
     setNoteEdit(false);
+    setEditErrors({});
     setEditMode(true);
   };
 
